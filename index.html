@@ -1823,11 +1823,17 @@
 
   function saveSettings() {
     const val = document.getElementById('at-key-input').value.trim();
-    if (val && !val.startsWith('••')) {
+    // Only save if it looks like a real key (not the masked placeholder)
+    if (val && !val.includes('•')) {
       localStorage.setItem('chp-airtable-key', val);
+      console.log('CHP: API key saved, length:', val.length);
+    } else if (val.includes('•')) {
+      // User didn't change the masked value — existing key stays, just reload
+      console.log('CHP: Using existing API key');
     }
     closeSettings();
-    loadAllData();
+    // Small delay to ensure settings panel is closed before loading
+    setTimeout(loadAllData, 100);
   }
 
   function getKey() {
@@ -1841,24 +1847,28 @@
   async function airtableFetch(tableId, fields, pageSize = 20, sort = null) {
     const key = getKey();
     if (!key) { console.warn('CHP: No API key found'); return null; }
-    let url = `https://api.airtable.com/v0/${BASE_ID}/${tableId}?pageSize=${pageSize}`;
-    fields.forEach(f => url += `&fields%5B%5D=${encodeURIComponent(f)}`);
-    if (sort) url += `&sort%5B0%5D%5Bfield%5D=${encodeURIComponent(sort.field)}&sort%5B0%5D%5Bdirection%5D=${sort.dir}`;
+    const params = new URLSearchParams();
+    params.set('pageSize', pageSize);
+    fields.forEach(f => params.append('fields[]', f));
+    if (sort) {
+      params.set('sort[0][field]', sort.field);
+      params.set('sort[0][direction]', sort.dir);
+    }
+    const url = `https://api.airtable.com/v0/${BASE_ID}/${tableId}?${params.toString()}`;
     try {
       const res = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${key}`,
-          'Content-Type': 'application/json'
-        }
+        headers: { Authorization: `Bearer ${key}` }
       });
       if (!res.ok) {
         const err = await res.text();
         console.error('CHP Airtable error:', res.status, err);
+        setEl('product-event-cards', `<div style="padding:16px;color:#ff4466;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;">⚠ API Error ${res.status} — check your API key in Settings and make sure it has data.records:read scope on your MAIN base.</div>`);
         return null;
       }
       return await res.json();
     } catch(e) {
       console.error('CHP fetch failed:', e);
+      setEl('product-event-cards', `<div style="padding:16px;color:#ff4466;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;">⚠ Network error: ${e.message}</div>`);
       return null;
     }
   }
