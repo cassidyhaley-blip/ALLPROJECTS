@@ -146,7 +146,7 @@
 
   .logo-text-main {
     font-family: 'Cinzel', serif;
-    font-size: 20px;
+    font-size: 21px;
     font-weight: 900;
     letter-spacing: 0.12em;
     background: linear-gradient(135deg, #ffe8f0, #ffc0d8, #e090c0, #c070d0);
@@ -158,8 +158,8 @@
 
   .logo-text-sub {
     font-family: 'Orbitron', sans-serif;
-    font-size: 9px;
-    letter-spacing: 0.35em;
+    font-size: 10px;
+    letter-spacing: 0.25em;
     color: var(--text-muted);
     margin-top: 4px;
     text-transform: uppercase;
@@ -224,37 +224,35 @@
     grid-template-rows: 1fr 1fr;
     gap: 2px;
     padding: 2px;
-    min-height: calc(100vh - 85px);
+    height: calc(100vh - 72px);
+    max-height: calc(100vh - 72px);
+    overflow: hidden;
   }
+
+  /* 4-quadrant desktop layout order: Brand(1) Ops(2) / Sales(3) Product(4) */
+  .q-brand  { order: 1; }
+  .q-ops    { order: 2; }
+  .q-sales  { order: 3; }
+  .q-product { order: 4; }
 
   @media (max-width: 768px) {
     .main-grid {
       grid-template-columns: 1fr;
       grid-template-rows: repeat(4, auto);
-      min-height: unset;
+      height: auto;
+      max-height: none;
+      overflow: visible;
     }
+    /* Mobile vertical order: Brand, Sales, Product, Ops */
+    .q-brand   { order: 1; }
+    .q-sales   { order: 2; }
     .q-product { order: 3; }
-    .q-ops { order: 4; }
-    .widget-grid {
-      grid-template-columns: 1fr 1fr 1fr;
-    }
-    .widget-grid-2 {
-      grid-template-columns: 1fr 1fr;
-    }
-    .q-inner {
-      padding: 14px 14px 12px;
-    }
-    .logo-text-main {
-      font-size: 14px;
-    }
-    .overlay-content {
-      grid-template-columns: 1fr 1fr;
-      padding: 20px;
-    }
-    .overlay-widget.span-3 { grid-column: span 2; }
-    .header {
-      padding: 12px 16px;
-    }
+    .q-ops     { order: 4; }
+    .widget-grid { grid-template-columns: 1fr 1fr; }
+    .q-inner { padding: 14px 14px 12px; }
+    .logo-text-main { font-size: 14px; }
+    .overlay-content { grid-template-columns: 1fr 1fr; padding: 16px; }
+    .header { padding: 12px 16px; }
   }
 
   /* Quadrant */
@@ -265,6 +263,7 @@
     overflow: hidden;
     cursor: pointer;
     transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 0;
   }
 
   .quadrant::before {
@@ -355,6 +354,8 @@
     flex-direction: column;
     padding: 20px 22px 18px;
     gap: 12px;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .q-header {
@@ -379,9 +380,9 @@
 
   .dept-label {
     font-family: 'Orbitron', sans-serif;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
   }
 
@@ -395,12 +396,14 @@
   /* Widget grid */
   .widget-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: auto;
     gap: 8px;
     flex: 1;
+    align-content: start;
   }
 
-  .widget-grid-2 { grid-template-columns: 1fr 1fr; }
+  .widget-grid-2 { grid-template-columns: repeat(3, 1fr); }
 
   .widget {
     background: rgba(255,255,255,0.04);
@@ -415,7 +418,173 @@
     overflow: hidden;
   }
 
-  .widget:hover { background: rgba(255,255,255,0.07); }
+  /* Login Screen */
+  .login-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #06040f;
+    overflow-y: auto;
+    padding: 40px 20px;
+  }
+
+  .login-screen::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(180, 60, 160, 0.2) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 30%, rgba(60, 80, 220, 0.2) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 85%, rgba(120, 30, 100, 0.15) 0%, transparent 50%);
+  }
+
+  .login-logo {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .login-logo img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    box-shadow: 0 0 40px rgba(255, 140, 180, 0.5);
+  }
+
+  .login-logo-text {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+    background: linear-gradient(135deg, #ffe8f0, #ffc0d8, #e090c0, #c070d0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .login-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 45, 138, 0.25);
+    box-shadow: 0 0 60px rgba(255, 45, 138, 0.1), 0 0 120px rgba(60, 80, 220, 0.08);
+    padding: 36px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .login-tagline {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(210, 200, 240, 0.75);
+    line-height: 1.5;
+  }
+
+  .login-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    border-radius: 8px;
+    border: 1px solid var(--brand-pink);
+    background: transparent;
+    color: var(--brand-pink);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.25s;
+    box-shadow: 0 0 20px rgba(255, 45, 138, 0.15);
+    width: 100%;
+    justify-content: center;
+  }
+
+  .login-btn:hover {
+    background: rgba(255, 45, 138, 0.1);
+    box-shadow: 0 0 40px rgba(255, 45, 138, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .login-divider {
+    width: 100%;
+    height: 1px;
+    background: rgba(255,255,255,0.07);
+  }
+
+  .login-note {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    color: rgba(200, 185, 230, 0.4);
+  }
+
+  .login-footer {
+    position: relative;
+    z-index: 1;
+    margin-top: 24px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: rgba(200, 185, 230, 0.4);
+    text-transform: uppercase;
+  }
+
+  .login-screen.hidden {
+    display: none;
+  }
+
+  /* Fade in animation for dashboard after login */
+  .app {
+    animation: none;
+  }
+  .app.fade-in {
+    animation: fade-in 0.6s ease both;
+  }
+  @keyframes fade-in {
+    from { opacity: 0; transform: scale(0.99); }
+    to { opacity: 1; transform: scale(1); }
+  }
+    cursor: grab;
+    user-select: none;
+  }
+  .widget:active { cursor: grabbing; }
+  .widget.dragging {
+    opacity: 0.4;
+    cursor: grabbing;
+    transform: scale(0.97);
+    z-index: 50;
+  }
+  .widget.drag-over {
+    outline: 1px dashed rgba(255,255,255,0.4);
+    outline-offset: 2px;
+  }
+  .drag-handle {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.2);
+    pointer-events: none;
+    letter-spacing: 1px;
+  }
+  .widget:hover .drag-handle { color: rgba(255,255,255,0.45); }
 
   .widget.widget-accent {
     border-left-width: 2px;
@@ -423,8 +592,8 @@
 
   .widget-label {
     font-family: 'Orbitron', sans-serif;
-    font-size: 8px;
-    letter-spacing: 0.2em;
+    font-size: 10px;
+    letter-spacing: 0.15em;
     color: rgba(220, 210, 255, 0.9);
     text-transform: uppercase;
   }
@@ -437,12 +606,12 @@
     line-height: 1;
   }
 
-  .widget-value.sm { font-size: 15px; }
+  .widget-value.sm { font-size: 17px; }
   .widget-value.lg { font-size: 28px; }
 
   .widget-sub {
-    font-size: 12px;
-    color: rgba(210, 200, 240, 0.85);
+    font-size: 13px;
+    color: rgba(210, 200, 240, 0.9);
     font-family: 'Rajdhani', sans-serif;
     font-weight: 500;
     line-height: 1.3;
@@ -503,8 +672,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 12px;
-    color: rgba(220, 210, 245, 0.9);
+    font-size: 14px;
+    color: rgba(220, 210, 245, 0.95);
     font-family: 'Rajdhani', sans-serif;
     font-weight: 500;
     cursor: pointer;
@@ -533,7 +702,7 @@
     justify-content: space-between;
     padding: 5px 0;
     border-bottom: 1px solid rgba(255,255,255,0.04);
-    font-size: 11px;
+    font-size: 13px;
     font-family: 'Rajdhani', sans-serif;
   }
 
@@ -560,7 +729,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 10px;
+    font-size: 12px;
     font-family: 'Rajdhani', sans-serif;
     color: var(--text-muted);
     padding: 2px 0;
@@ -576,10 +745,25 @@
     position: fixed;
     inset: 0;
     z-index: 200;
-    background: #f5f5f7;
+    background: #06040f;
     animation: overlay-in 0.3s ease;
     overflow-y: auto;
   }
+
+  /* Galaxy inside overlay */
+  .expanded-overlay::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(180, 60, 160, 0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 30%, rgba(60, 80, 220, 0.15) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 85%, rgba(120, 30, 100, 0.10) 0%, transparent 50%);
+  }
+
+  .expanded-overlay > * { position: relative; z-index: 1; }
 
   .expanded-overlay.active { display: flex; flex-direction: column; }
 
@@ -593,9 +777,10 @@
     align-items: center;
     justify-content: space-between;
     padding: 22px 36px;
-    border-bottom: 2px solid rgba(0,0,0,0.12);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
     flex-shrink: 0;
-    background: #ffffff;
+    background: rgba(8, 5, 20, 0.6);
+    backdrop-filter: blur(20px);
   }
 
   .overlay-title {
@@ -609,9 +794,9 @@
     width: 40px;
     height: 40px;
     border-radius: 8px;
-    border: 1px solid rgba(0,0,0,0.15);
-    background: rgba(0,0,0,0.05);
-    color: #333;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+    color: var(--text-primary);
     cursor: pointer;
     font-size: 18px;
     display: flex;
@@ -619,36 +804,54 @@
     justify-content: center;
     transition: all 0.2s;
   }
-  .close-btn:hover { background: rgba(0,0,0,0.1); }
+  .close-btn:hover { background: rgba(255,255,255,0.12); }
 
   .overlay-content {
     flex: 1;
     padding: 28px 36px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: auto;
     gap: 16px;
     align-content: start;
   }
 
   .overlay-widget {
-    background: #ffffff;
-    border: 1px solid rgba(0,0,0,0.09);
-    border-radius: 12px;
-    padding: 20px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 14px 16px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    gap: 8px;
+    transition: background 0.2s;
   }
+  .overlay-widget:hover { background: rgba(255,255,255,0.07); }
 
-  .overlay-widget.span-2 { grid-column: span 2; }
-  .overlay-widget.span-3 { grid-column: span 3; }
+  #overlay-brand .overlay-header { border-bottom-color: rgba(255,45,138,0.4); box-shadow: 0 1px 30px rgba(255,45,138,0.08); }
+  #overlay-brand .overlay-content { background: radial-gradient(ellipse at 10% 0%, rgba(255,45,138,0.06) 0%, transparent 60%); }
+  #overlay-sales .overlay-header { border-bottom-color: rgba(0,255,136,0.4); box-shadow: 0 1px 30px rgba(0,255,136,0.08); }
+  #overlay-sales .overlay-content { background: radial-gradient(ellipse at 90% 0%, rgba(0,255,136,0.06) 0%, transparent 60%); }
+  #overlay-product .overlay-header { border-bottom-color: rgba(77,159,255,0.4); box-shadow: 0 1px 30px rgba(77,159,255,0.08); }
+  #overlay-product .overlay-content { background: radial-gradient(ellipse at 90% 0%, rgba(77,159,255,0.06) 0%, transparent 60%); }
+  #overlay-ops .overlay-header { border-bottom-color: rgba(0,229,255,0.4); box-shadow: 0 1px 30px rgba(0,229,255,0.08); }
+  #overlay-ops .overlay-content { background: radial-gradient(ellipse at 10% 0%, rgba(0,229,255,0.06) 0%, transparent 60%); }
+
+  .overlay-widget[draggable="true"] {
+    cursor: grab;
+    user-select: none;
+    position: relative;
+  }
+  .overlay-widget[draggable="true"]:active { cursor: grabbing; }
+  .overlay-widget[draggable="true"]:hover .drag-handle { color: rgba(255,255,255,0.45); }
+  .overlay-widget.dragging { opacity: 0.4; transform: scale(0.97); }
+  .overlay-widget.drag-over { outline: 1px dashed rgba(255,255,255,0.4); outline-offset: 2px; }
 
   .overlay-widget-title {
     font-family: 'Orbitron', sans-serif;
-    font-size: 9px;
-    letter-spacing: 0.25em;
-    color: #888;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
     text-transform: uppercase;
     margin-bottom: 2px;
   }
@@ -657,61 +860,60 @@
     font-family: 'Orbitron', sans-serif;
     font-size: 32px;
     font-weight: 700;
+    color: var(--text-primary);
   }
 
   /* Overlay-specific task and widget overrides */
   .expanded-overlay .widget-sub {
-    color: #333;
+    color: rgba(210, 200, 240, 0.85);
     font-size: 13px;
     font-weight: 500;
   }
 
   .expanded-overlay .task-item {
-    color: #222;
+    color: rgba(220, 210, 245, 0.9);
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
   }
 
-  .expanded-overlay .task-item:hover { color: #000; }
-  .expanded-overlay .task-item.done span { color: #888; text-decoration: line-through; }
-  .expanded-overlay .task-item.done .task-dot { background: #999; }
+  .expanded-overlay .task-item:hover { color: #ffffff; }
+  .expanded-overlay .task-item.done span { color: rgba(255,255,255,0.3); text-decoration: line-through; }
+  .expanded-overlay .task-item.done .task-dot { background: rgba(255,255,255,0.3); }
 
   .expanded-overlay .auto-item {
-    color: #222;
+    color: rgba(220, 210, 245, 0.85);
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     padding: 3px 0;
   }
 
   .expanded-overlay .task-input {
-    background: #f0f0f3;
-    border: 1px solid rgba(0,0,0,0.2);
-    color: #111;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #ffffff;
     font-size: 13px;
   }
 
-  .expanded-overlay .task-input:focus { border-color: rgba(0,0,0,0.4); }
-  .expanded-overlay .task-input::placeholder { color: #999; }
+  .expanded-overlay .task-input:focus { border-color: rgba(255,255,255,0.35); }
+  .expanded-overlay .task-input::placeholder { color: rgba(255,255,255,0.3); }
 
   .expanded-overlay .progress-bar {
-    background: rgba(0,0,0,0.1);
+    background: rgba(255,255,255,0.08);
   }
 
   .expanded-overlay .list-item {
-    border-bottom-color: rgba(0,0,0,0.08);
+    border-bottom-color: rgba(255,255,255,0.06);
   }
 
-  .expanded-overlay .list-item-name { color: #111; font-weight: 600; font-size: 13px; }
-  .expanded-overlay .list-item-meta { color: #555; font-size: 12px; }
+  .expanded-overlay .list-item-name { color: #ffffff; font-weight: 600; font-size: 13px; }
+  .expanded-overlay .list-item-meta { color: rgba(210,200,240,0.7); font-size: 12px; }
 
   .expanded-overlay .overlay-widget-title {
-    color: #555;
-    font-size: 10px;
-    letter-spacing: 0.2em;
+    color: var(--text-muted);
   }
 
   .expanded-overlay .overlay-widget-value {
-    color: #111;
+    color: var(--text-primary);
   }
 
   /* Add task input */
@@ -777,6 +979,22 @@
 </head>
 <body>
 
+
+<!-- Login Screen -->
+<div class="login-screen" id="login-screen">
+  <div class="login-logo">
+    <img src="data:image/png;base64,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" alt="CHP Logo">
+    <div class="login-logo-text">CHP Command Center</div>
+  </div>
+  <div class="login-card">
+    <p class="login-tagline">Enter your work email to receive a secure magic link — no password needed.</p>
+    <div class="login-divider"></div>
+    <a href="https://chpcommand.zite.so" target="_blank" class="login-btn">✦ &nbsp; Request Access Link</a>
+    <div class="login-note">A new tab will open. After clicking your magic link you'll be brought back here automatically.</div>
+  </div>
+  <div class="login-footer">Cassidy Haley Productions &nbsp;·&nbsp; Internal Access Only</div>
+</div>
+
 <div class="galaxy-bg"></div>
 <div class="stars"></div>
 <div class="nebula nebula-1"></div>
@@ -817,9 +1035,10 @@
           <span class="expand-icon">⤢</span>
         </div>
 
-        <div class="widget-grid">
+        <div class="widget-grid" id="grid-brand">
           <!-- Social Stats -->
-          <div class="widget widget-accent">
+          <div class="widget widget-accent" draggable="true" data-wid="w1">
+            <span class="drag-handle" aria-hidden="true">⠿⠿</span>
             <div class="widget-label">Social Reach</div>
             <div class="widget-value sm">—</div>
             <div class="widget-sub">Connect Instagram</div>
@@ -835,39 +1054,44 @@
           </div>
 
           <!-- Web Stats -->
-          <div class="widget">
+          <div class="widget" draggable="true" data-wid="w5">
+            <span class="drag-handle" aria-hidden="true">⠿⠿</span>
             <div class="widget-label">Web Stats</div>
             <div class="widget-value sm">—</div>
             <div class="widget-sub">Connect Analytics</div>
           </div>
 
           <!-- Team -->
-          <div class="widget">
+          <div class="widget" draggable="true" data-wid="w9">
+            <span class="drag-handle" aria-hidden="true">⠿⠿</span>
             <div class="widget-label">Team</div>
-            <div class="widget-value lg" style="color:var(--brand-pink)">—</div>
+            <div class="widget-value lg">—</div>
             <div class="widget-sub">Brand members</div>
           </div>
 
           <!-- Assets -->
-          <div class="widget widget-accent" style="grid-column: span 2;">
+          <div class="widget widget-accent" draggable="true" data-wid="w13" style="grid-column: span 2;">
+            <span class="drag-handle" aria-hidden="true">⠿⠿</span>
             <div class="widget-label">Asset Folders</div>
             <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;">
               <span class="tag">📁 Google Drive</span>
               <span class="tag">🎨 Canva</span>
               <span class="tag">📸 Photos</span>
             </div>
-            <div class="widget-sub" style="margin-top:4px;">Link folders in settings</div>
+            <div class="widget-sub">Link folders in settings</div>
           </div>
 
           <!-- PR Docs -->
-          <div class="widget">
+          <div class="widget" draggable="true" data-wid="w16">
+            <span class="drag-handle" aria-hidden="true">⠿⠿</span>
             <div class="widget-label">PR Docs</div>
             <div class="widget-value sm">—</div>
             <div class="widget-sub">Active campaigns</div>
           </div>
 
           <!-- Tasks -->
-          <div class="widget" style="grid-column:span 2;">
+          <div class="widget" draggable="true" data-wid="w20" style="grid-column:span 2;">
+            <span class="drag-handle" aria-hidden="true">⠿⠿</span>
             <div class="widget-label">Brand Tasks</div>
             <div class="task-list">
               <div class="task-item" onclick="toggleTask(this)">
@@ -900,11 +1124,12 @@
           <span class="expand-icon">⤢</span>
         </div>
 
-        <div class="widget-grid">
+        <div class="widget-grid" id="grid-sales">
           <!-- Revenue -->
-          <div class="widget widget-accent">
+          <div class="widget widget-accent" draggable="true" data-wid="w22">
+            <span class="drag-handle" aria-hidden="true">⠿⠿</span>
             <div class="widget-label">Revenue MTD</div>
-            <div class="widget-value sm" style="color:var(--sales-green)">—</div>
+            <div class="widget-value sm">—</div>
             <div class="widget-sub">Connect QuickBooks</div>
             <div class="mini-chart">
               <div class="bar" style="height:30%;background:var(--sales-green)"></div>
@@ -918,14 +1143,16 @@
           </div>
 
           <!-- Pipeline -->
-          <div class="widget">
+          <div class="widget" draggable="true" data-wid="w26">
+            <span class="drag-handle" aria-hidden="true">⠿⠿</span>
             <div class="widget-label">Inquiries</div>
-            <div class="widget-value lg" style="color:var(--sales-green)">—</div>
+            <div class="widget-value lg">—</div>
             <div class="widget-sub">Active leads</div>
           </div>
 
           <!-- Target -->
-          <div class="widget">
+          <div class="widget" draggable="true" data-wid="w30">
+            <span class="drag-handle" aria-hidden="true">⠿⠿</span>
             <div class="widget-label">Sales Target</div>
             <div class="widget-value sm">—%</div>
             <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
@@ -933,7 +1160,8 @@
           </div>
 
           <!-- Client Pipeline -->
-          <div class="widget" style="grid-column:span 2;">
+          <div class="widget" draggable="true" data-wid="w34" style="grid-column:span 2;">
+            <span class="drag-handle" aria-hidden="true">⠿⠿</span>
             <div class="widget-label">Active Clients</div>
             <div class="list-item">
               <span class="list-item-name">—</span>
@@ -946,7 +1174,8 @@
           </div>
 
           <!-- Tasks -->
-          <div class="widget" style="grid-column:span 2;">
+          <div class="widget" draggable="true" data-wid="w36" style="grid-column:span 2;">
+            <span class="drag-handle" aria-hidden="true">⠿⠿</span>
             <div class="widget-label">Sales Tasks</div>
             <div class="task-list">
               <div class="task-item" onclick="toggleTask(this)">
@@ -979,63 +1208,50 @@
           <span class="expand-icon">⤢</span>
         </div>
 
-        <div class="widget-grid">
-          <!-- Bookings -->
-          <div class="widget widget-accent">
-            <div class="widget-label">Bookings</div>
-            <div class="widget-value lg" style="color:var(--product-blue)">—</div>
-            <div class="widget-sub">Upcoming events</div>
-          </div>
+        <!-- Product quadrant uses a different layout — horizontal scrolling event cards -->
+        <div id="grid-product" style="flex:1;overflow-x:auto;overflow-y:hidden;display:flex;flex-direction:column;gap:8px;min-height:0;">
 
-          <!-- Talent -->
-          <div class="widget">
-            <div class="widget-label">Talent Pool</div>
-            <div class="widget-value lg" style="color:var(--product-blue)">—</div>
-            <div class="widget-sub">Active performers</div>
-          </div>
-
-          <!-- Costumes -->
-          <div class="widget">
-            <div class="widget-label">Costume Orders</div>
-            <div class="widget-value sm">— in prod.</div>
-            <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
-            <div class="widget-sub">Production status</div>
-          </div>
-
-          <!-- Packages -->
-          <div class="widget" style="grid-column:span 2;">
-            <div class="widget-label">Entertainment Packages</div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
-              <span class="tag">Connect Airtable</span>
+          <!-- Summary strip -->
+          <div style="display:flex;gap:8px;flex-shrink:0;">
+            <div class="widget widget-accent" draggable="true" data-wid="w38" id="product-bookings-count" style="flex:1;min-width:0;">
+              <span class="drag-handle" aria-hidden="true">⠿⠿</span>
+              <div class="widget-label">Events</div>
+              <div class="widget-value lg" style="color:var(--product-blue)">—</div>
+              <div class="widget-sub">upcoming</div>
             </div>
-            <div class="widget-sub" style="margin-top:4px;">Packages will display here</div>
-          </div>
-
-          <!-- COGS -->
-          <div class="widget">
-            <div class="widget-label">COGS</div>
-            <div class="widget-value sm">—</div>
-            <div class="widget-sub">Cost of goods</div>
-          </div>
-
-          <!-- Tasks -->
-          <div class="widget" style="grid-column:span 2;">
-            <div class="widget-label">Product Tasks</div>
-            <div class="task-list">
-              <div class="task-item" onclick="toggleTask(this)">
-                <div class="task-dot"></div>
-                <span>Finalize costume order — July 4th event</span>
-              </div>
-              <div class="task-item" onclick="toggleTask(this)">
-                <div class="task-dot"></div>
-                <span>Confirm talent roster — Gala booking</span>
-              </div>
-              <div class="task-item done" onclick="toggleTask(this)">
-                <div class="task-dot"></div>
-                <span>Content capture — June 1st event</span>
-              </div>
+            <div class="widget" draggable="true" data-wid="w42" id="product-revenue-value" style="flex:1;min-width:0;">
+              <span class="drag-handle" aria-hidden="true">⠿⠿</span>
+              <div class="widget-label">Pkg Value</div>
+              <div class="widget-value sm" style="color:var(--product-blue)">—</div>
+              <div class="widget-sub">total upcoming</div>
+            </div>
+            <div class="widget" draggable="true" data-wid="w46" id="product-cogs-value" style="flex:1;min-width:0;">
+              <span class="drag-handle" aria-hidden="true">⠿⠿</span>
+              <div class="widget-label">COGS</div>
+              <div class="widget-value sm">—</div>
+              <div class="widget-sub">payouts + build</div>
+            </div>
+            <div class="widget" draggable="true" data-wid="w50" id="product-talent-count" style="flex:1;min-width:0;">
+              <span class="drag-handle" aria-hidden="true">⠿⠿</span>
+              <div class="widget-label">Profit</div>
+              <div class="widget-value sm" style="color:#00ff88">—</div>
+              <div class="widget-sub">upcoming</div>
+            </div>
+            <div class="widget" draggable="true" data-wid="w53" id="product-costume-count" style="flex:1;min-width:0;">
+              <span class="drag-handle" aria-hidden="true">⠿⠿</span>
+              <div class="widget-label">Payouts</div>
+              <div class="widget-value sm">—</div>
+              <div class="widget-sub">talent</div>
             </div>
           </div>
+
+          <!-- Horizontal scrolling event cards -->
+          <div id="product-event-cards" style="display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;flex:1;min-height:0;padding-bottom:4px;">
+            <div style="display:flex;align-items:center;justify-content:center;min-width:160px;color:rgba(210,200,240,0.4);font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:0.1em;">
+              LOADING...
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -1052,30 +1268,34 @@
           <span class="expand-icon">⤢</span>
         </div>
 
-        <div class="widget-grid">
+        <div class="widget-grid" id="grid-ops">
           <!-- Financial Snapshot -->
-          <div class="widget widget-accent">
+          <div class="widget widget-accent" draggable="true" data-wid="w59">
+            <span class="drag-handle" aria-hidden="true">⠿⠿</span>
             <div class="widget-label">Biz Snapshot</div>
-            <div class="widget-value sm" style="color:var(--ops-cyan)">—</div>
+            <div class="widget-value sm">—</div>
             <div class="widget-sub">Connect QuickBooks</div>
           </div>
 
           <!-- P&L -->
-          <div class="widget">
+          <div class="widget" draggable="true" data-wid="w63">
+            <span class="drag-handle" aria-hidden="true">⠿⠿</span>
             <div class="widget-label">P & L</div>
             <div class="widget-value sm">—</div>
             <div class="widget-sub">This quarter</div>
           </div>
 
           <!-- Payroll -->
-          <div class="widget">
+          <div class="widget" draggable="true" data-wid="w67">
+            <span class="drag-handle" aria-hidden="true">⠿⠿</span>
             <div class="widget-label">Payroll</div>
             <div class="widget-value sm">—</div>
             <div class="widget-sub">Next run date</div>
           </div>
 
           <!-- Automations -->
-          <div class="widget" style="grid-column:span 2;">
+          <div class="widget" draggable="true" data-wid="w71" style="grid-column:span 2;">
+            <span class="drag-handle" aria-hidden="true">⠿⠿</span>
             <div class="widget-label">Automations — Make.com</div>
             <div style="margin-top:4px;">
               <div class="auto-item"><div class="auto-dot on"></div>Booking Contract Automation</div>
@@ -1087,14 +1307,16 @@
           </div>
 
           <!-- Team Mgmt -->
-          <div class="widget">
+          <div class="widget" draggable="true" data-wid="w73">
+            <span class="drag-handle" aria-hidden="true">⠿⠿</span>
             <div class="widget-label">Team</div>
-            <div class="widget-value lg" style="color:var(--ops-cyan)">—</div>
+            <div class="widget-value lg">—</div>
             <div class="widget-sub">Active members</div>
           </div>
 
           <!-- Tasks -->
-          <div class="widget" style="grid-column:span 2;">
+          <div class="widget" draggable="true" data-wid="w77" style="grid-column:span 2;">
+            <span class="drag-handle" aria-hidden="true">⠿⠿</span>
             <div class="widget-label">Ops Tasks</div>
             <div class="task-list">
               <div class="task-item" onclick="toggleTask(this)">
@@ -1121,18 +1343,20 @@
 <!-- Expanded overlays -->
 <div class="expanded-overlay" id="overlay-brand">
   <div class="overlay-header">
-    <div class="overlay-title" style="color:var(--brand-pink);text-shadow:0 0 30px var(--brand-pink)">BRAND</div>
+    <div style="display:flex;align-items:center;gap:12px;"><div style="width:3px;height:28px;border-radius:2px;background:var(--brand-pink);box-shadow:0 0 10px var(--brand-pink);flex-shrink:0;"></div><div class="overlay-title" style="color:var(--brand-pink);text-shadow:0 0 30px var(--brand-pink),0 0 60px rgba(255,45,138,0.5)">BRAND</div></div>
     <button class="close-btn" onclick="closeOverlay('brand')">✕</button>
   </div>
-  <div class="overlay-content">
-    <div class="overlay-widget">
-      <div class="overlay-widget-title">Social Reach</div>
-      <div class="overlay-widget-value" style="color:var(--brand-pink)">—</div>
+  <div class="overlay-content widget-grid" id="overlay-grid-brand">
+    <div class="overlay-widget" draggable="true" data-wid="w1"">
+      <span class="drag-handle" aria-hidden="true">⠿⠿</span>
+      <div class="overlay-widget" draggable="true" data-wid="w5"-title">Social Reach</div>
+      <div class="overlay-widget" draggable="true" data-wid="w9"-value" style="color:var(--brand-pink)">—</div>
       <div class="widget-sub">Connect Instagram API</div>
     </div>
-    <div class="overlay-widget">
-      <div class="overlay-widget-title">Web Traffic</div>
-      <div class="overlay-widget-value" style="color:var(--brand-pink)">—</div>
+    <div class="overlay-widget" draggable="true" data-wid="w13"">
+      <span class="drag-handle" aria-hidden="true">⠿⠿</span>
+      <div class="overlay-widget" draggable="true" data-wid="w16"-title">Web Traffic</div>
+      <div class="overlay-widget" draggable="true" data-wid="w20"-value" style="color:var(--brand-pink)">—</div>
       <div class="widget-sub">Connect Google Analytics</div>
     </div>
     <div class="overlay-widget">
@@ -1148,7 +1372,7 @@
         <span class="tag" style="background:var(--brand-pink-dim);border-color:rgba(255,45,138,0.3);color:var(--brand-pink);">🎨 Canva Workspace</span>
         <span class="tag" style="background:var(--brand-pink-dim);border-color:rgba(255,45,138,0.3);color:var(--brand-pink);">📄 PR Docs</span>
       </div>
-      <div class="widget-sub" style="margin-top:10px;">Link your Google Drive folders in settings</div>
+      <div class="widget-sub">Link your Google Drive folders in settings</div>
     </div>
     <div class="overlay-widget">
       <div class="overlay-widget-title">Brand Team</div>
@@ -1178,17 +1402,19 @@
 
 <div class="expanded-overlay" id="overlay-sales">
   <div class="overlay-header">
-    <div class="overlay-title" style="color:var(--sales-green);text-shadow:0 0 30px var(--sales-green)">SALES</div>
+    <div style="display:flex;align-items:center;gap:12px;"><div style="width:3px;height:28px;border-radius:2px;background:var(--sales-green);box-shadow:0 0 10px var(--sales-green);flex-shrink:0;"></div><div class="overlay-title" style="color:var(--sales-green);text-shadow:0 0 30px var(--sales-green),0 0 60px rgba(0,255,136,0.5)">SALES</div></div>
     <button class="close-btn" onclick="closeOverlay('sales')">✕</button>
   </div>
-  <div class="overlay-content">
-    <div class="overlay-widget">
-      <div class="overlay-widget-title">Revenue MTD</div>
-      <div class="overlay-widget-value" style="color:var(--sales-green)">—</div>
+  <div class="overlay-content widget-grid" id="overlay-grid-sales">
+    <div class="overlay-widget" draggable="true" data-wid="w22"">
+      <span class="drag-handle" aria-hidden="true">⠿⠿</span>
+      <div class="overlay-widget" draggable="true" data-wid="w26"-title">Revenue MTD</div>
+      <div class="overlay-widget" draggable="true" data-wid="w30"-value" style="color:var(--sales-green)">—</div>
       <div class="widget-sub">Connect QuickBooks</div>
     </div>
-    <div class="overlay-widget">
-      <div class="overlay-widget-title">Active Inquiries</div>
+    <div class="overlay-widget" draggable="true" data-wid="w34"">
+      <span class="drag-handle" aria-hidden="true">⠿⠿</span>
+      <div class="overlay-widget" draggable="true" data-wid="w36"-title">Active Inquiries</div>
       <div class="overlay-widget-value" style="color:var(--sales-green)">—</div>
       <div class="widget-sub">Leads in pipeline</div>
     </div>
@@ -1199,7 +1425,7 @@
     </div>
     <div class="overlay-widget span-3">
       <div class="overlay-widget-title">Client Pipeline</div>
-      <div class="widget-sub" style="margin-top:6px;">Connect Airtable to see live client data</div>
+      <div class="widget-sub">Connect Airtable to see live client data</div>
     </div>
     <div class="overlay-widget span-3">
       <div class="overlay-widget-title">Sales Tasks</div>
@@ -1224,34 +1450,71 @@
 
 <div class="expanded-overlay" id="overlay-product">
   <div class="overlay-header">
-    <div class="overlay-title" style="color:var(--product-blue);text-shadow:0 0 30px var(--product-blue)">PRODUCT</div>
+    <div style="display:flex;align-items:center;gap:12px;"><div style="width:3px;height:28px;border-radius:2px;background:var(--product-blue);box-shadow:0 0 10px var(--product-blue);flex-shrink:0;"></div><div class="overlay-title" style="color:var(--product-blue);text-shadow:0 0 30px var(--product-blue),0 0 60px rgba(77,159,255,0.5)">PRODUCT</div></div>
     <button class="close-btn" onclick="closeOverlay('product')">✕</button>
   </div>
-  <div class="overlay-content">
-    <div class="overlay-widget">
-      <div class="overlay-widget-title">Upcoming Bookings</div>
-      <div class="overlay-widget-value" style="color:var(--product-blue)">—</div>
-      <div class="widget-sub">Connect Airtable</div>
+  <div class="overlay-content widget-grid" id="overlay-grid-product" style="grid-template-columns:1fr;">
+    <!-- Summary row -->
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;">
+      <div class="overlay-widget" draggable="true" data-wid="w38" id="product-bookings-count-ov">
+        <span class="drag-handle" aria-hidden="true">⠿⠿</span>
+        <div class="overlay-widget-title">Upcoming Events</div>
+        <div class="overlay-widget-value" style="color:var(--product-blue)">—</div>
+        <div class="widget-sub">—</div>
+      </div>
+      <div class="overlay-widget" draggable="true" data-wid="w42" id="product-revenue-value-ov">
+        <span class="drag-handle" aria-hidden="true">⠿⠿</span>
+        <div class="overlay-widget-title">Package Value</div>
+        <div class="overlay-widget-value" style="color:var(--product-blue)">—</div>
+        <div class="widget-sub">Total upcoming</div>
+      </div>
+      <div class="overlay-widget" draggable="true" data-wid="w46" id="product-cogs-value-ov">
+        <span class="drag-handle" aria-hidden="true">⠿⠿</span>
+        <div class="overlay-widget-title">Total COGS</div>
+        <div class="overlay-widget-value">—</div>
+        <div class="widget-sub">Payouts + build + travel</div>
+      </div>
+      <div class="overlay-widget" draggable="true" data-wid="w50" id="product-talent-count-ov">
+        <span class="drag-handle" aria-hidden="true">⠿⠿</span>
+        <div class="overlay-widget-title">Gross Profit</div>
+        <div class="overlay-widget-value" style="color:#00ff88">—</div>
+        <div class="widget-sub">Upcoming events</div>
+      </div>
+      <div class="overlay-widget" draggable="true" data-wid="w53" id="product-costume-count-ov">
+        <span class="drag-handle" aria-hidden="true">⠿⠿</span>
+        <div class="overlay-widget-title">Talent Payouts</div>
+        <div class="overlay-widget-value">—</div>
+        <div class="widget-sub">Upcoming events</div>
+      </div>
     </div>
-    <div class="overlay-widget">
-      <div class="overlay-widget-title">Active Talent</div>
-      <div class="overlay-widget-value" style="color:var(--product-blue)">—</div>
-      <div class="widget-sub">Roster size</div>
+
+    <!-- Event table -->
+    <div class="overlay-widget" draggable="true" data-wid="w57" style="padding:0;overflow:hidden;">
+      <span class="drag-handle" aria-hidden="true" style="position:absolute;top:8px;right:12px;">⠿⠿</span>
+      <div style="padding:14px 16px 10px;border-bottom:1px solid rgba(255,255,255,0.07);">
+        <div class="overlay-widget-title">Event Cost Breakdown — Upcoming</div>
+      </div>
+      <!-- Table header -->
+      <div class="event-table-header">
+        <span style="flex:2;min-width:160px;">Event</span>
+        <span>Date</span>
+        <span>Package</span>
+        <span>Talent</span>
+        <span>Build</span>
+        <span>Travel</span>
+        <span>COGS</span>
+        <span>Profit</span>
+        <span>Margin</span>
+        <span>#</span>
+      </div>
+      <div id="product-events-table" style="max-height:420px;overflow-y:auto;">
+        <div style="padding:20px;color:rgba(210,200,240,0.6);font-size:13px;">Loading event data...</div>
+      </div>
     </div>
-    <div class="overlay-widget">
-      <div class="overlay-widget-title">COGS</div>
-      <div class="overlay-widget-value" style="color:var(--product-blue)">—</div>
-      <div class="widget-sub">Cost of goods sold</div>
-    </div>
-    <div class="overlay-widget span-2">
-      <div class="overlay-widget-title">Costume Production</div>
-      <div class="widget-sub" style="margin-top:6px;">Connect Airtable to see costume orders & production status</div>
-    </div>
-    <div class="overlay-widget">
-      <div class="overlay-widget-title">Entertainment Packages</div>
-      <div class="widget-sub" style="margin-top:6px;">Connect Airtable to see packages</div>
-    </div>
-    <div class="overlay-widget span-3">
+
+    <!-- Tasks -->
+    <div class="overlay-widget" draggable="true" data-wid="w57b">
+      <span class="drag-handle" aria-hidden="true">⠿⠿</span>
       <div class="overlay-widget-title">Product Tasks</div>
       <div class="task-list">
         <div class="task-item" onclick="toggleTask(this)">
@@ -1274,18 +1537,20 @@
 
 <div class="expanded-overlay" id="overlay-ops">
   <div class="overlay-header">
-    <div class="overlay-title" style="color:var(--ops-cyan);text-shadow:0 0 30px var(--ops-cyan)">OPS</div>
+    <div style="display:flex;align-items:center;gap:12px;"><div style="width:3px;height:28px;border-radius:2px;background:var(--ops-cyan);box-shadow:0 0 10px var(--ops-cyan);flex-shrink:0;"></div><div class="overlay-title" style="color:var(--ops-cyan);text-shadow:0 0 30px var(--ops-cyan),0 0 60px rgba(0,229,255,0.5)">OPS</div></div>
     <button class="close-btn" onclick="closeOverlay('ops')">✕</button>
   </div>
-  <div class="overlay-content">
-    <div class="overlay-widget">
-      <div class="overlay-widget-title">Financial Snapshot</div>
-      <div class="overlay-widget-value" style="color:var(--ops-cyan)">—</div>
+  <div class="overlay-content widget-grid" id="overlay-grid-ops">
+    <div class="overlay-widget" draggable="true" data-wid="w59"">
+      <span class="drag-handle" aria-hidden="true">⠿⠿</span>
+      <div class="overlay-widget" draggable="true" data-wid="w63"-title">Financial Snapshot</div>
+      <div class="overlay-widget" draggable="true" data-wid="w67"-value" style="color:var(--ops-cyan)">—</div>
       <div class="widget-sub">Connect QuickBooks</div>
     </div>
-    <div class="overlay-widget">
-      <div class="overlay-widget-title">P & L (QTD)</div>
-      <div class="overlay-widget-value" style="color:var(--ops-cyan)">—</div>
+    <div class="overlay-widget" draggable="true" data-wid="w71"">
+      <span class="drag-handle" aria-hidden="true">⠿⠿</span>
+      <div class="overlay-widget" draggable="true" data-wid="w73"-title">P & L (QTD)</div>
+      <div class="overlay-widget" draggable="true" data-wid="w77"-value" style="color:var(--ops-cyan)">—</div>
       <div class="widget-sub">This quarter</div>
     </div>
     <div class="overlay-widget">
@@ -1336,6 +1601,13 @@
 
   // Open quadrant expanded view
   function openQuadrant(name) {
+    // Sync overlay widget order from main grid before opening
+    const mainGrid = document.getElementById('grid-' + name);
+    const overlayGrid = document.getElementById('overlay-grid-' + name);
+    if (mainGrid && overlayGrid) {
+      const order = [...mainGrid.querySelectorAll(':scope > [data-wid]')].map(w => w.dataset.wid);
+      applyOrder(overlayGrid, order);
+    }
     document.getElementById('overlay-' + name).classList.add('active');
     document.body.style.overflow = 'hidden';
   }
@@ -1408,10 +1680,592 @@
     // When Airtable is wired in, data-fetch calls will go here
   }
 
-  function showSettings() {
-    alert('Settings panel coming soon!\n\nYou\'ll be able to enter:\n• Airtable API Key\n• QuickBooks Client ID & Secret\n• Google Drive folder links\n• Instagram API credentials');
-    event.stopPropagation();
+  // ── Login / Auth (DISABLED — re-enable when ready) ───────
+  (function() {
+    const loginScreen = document.getElementById('login-screen');
+    const app = document.querySelector('.app');
+    // Skip login for now — go straight to dashboard
+    loginScreen.classList.add('hidden');
+    app.style.display = '';
+  })();
+  // ── End Login / Auth ─────────────────────────────────────
+  let dragSrc = null;
+
+  // Each pair: [mainGridId, overlayGridId] — they share the same widget wids
+  const GRID_PAIRS = [
+    ['grid-brand',   'overlay-grid-brand'],
+    ['grid-sales',   'overlay-grid-sales'],
+    ['grid-product', 'overlay-grid-product'],
+    ['grid-ops',     'overlay-grid-ops'],
+  ];
+
+  // Get the canonical storage key (always use main grid id)
+  function storageKey(gridId) {
+    const pair = GRID_PAIRS.find(([main, overlay]) => main === gridId || overlay === gridId);
+    return pair ? 'widget-order-' + pair[0] : 'widget-order-' + gridId;
   }
+
+  // Get the paired grid element for a given grid
+  function getPaired(grid) {
+    const pair = GRID_PAIRS.find(([main, overlay]) => main === grid.id || overlay === grid.id);
+    if (!pair) return null;
+    const pairedId = pair[0] === grid.id ? pair[1] : pair[0];
+    return document.getElementById(pairedId);
+  }
+
+  // Reorder widgets in a grid to match an array of wids
+  function applyOrder(grid, order) {
+    order.forEach(wid => {
+      const el = grid.querySelector(`[data-wid="${wid}"]`);
+      if (el) grid.appendChild(el);
+    });
+  }
+
+  // Save order and sync to paired grid
+  function saveAndSync(grid) {
+    const order = [...grid.querySelectorAll(':scope > [data-wid]')].map(w => w.dataset.wid);
+    try { localStorage.setItem(storageKey(grid.id), JSON.stringify(order)); } catch(e) {}
+    const paired = getPaired(grid);
+    if (paired) applyOrder(paired, order);
+  }
+
+  // Restore saved order on load
+  function restoreOrder(grid) {
+    try {
+      const saved = localStorage.getItem(storageKey(grid.id));
+      if (saved) applyOrder(grid, JSON.parse(saved));
+    } catch(e) {}
+  }
+
+  function initDragDrop() {
+    document.querySelectorAll('.widget-grid').forEach(grid => {
+
+      grid.addEventListener('dragstart', e => {
+        const widget = e.target.closest(':scope > [draggable="true"]');
+        if (!widget || !grid.contains(widget)) return;
+        dragSrc = widget;
+        setTimeout(() => widget.classList.add('dragging'), 0);
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', widget.dataset.wid || '');
+      });
+
+      grid.addEventListener('dragend', e => {
+        document.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging'));
+        document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+        if (dragSrc) saveAndSync(grid);
+        dragSrc = null;
+      });
+
+      grid.addEventListener('dragover', e => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        const target = e.target.closest('[data-wid]');
+        if (target && target !== dragSrc && grid.contains(target)) {
+          document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+          target.classList.add('drag-over');
+        }
+      });
+
+      grid.addEventListener('dragleave', e => {
+        const target = e.target.closest('[data-wid]');
+        if (target) target.classList.remove('drag-over');
+      });
+
+      grid.addEventListener('drop', e => {
+        e.preventDefault();
+        const target = e.target.closest('[data-wid]');
+        if (!target || target === dragSrc || !grid.contains(target)) return;
+        target.classList.remove('drag-over');
+        const children = [...grid.querySelectorAll(':scope > [data-wid]')];
+        const srcIdx = children.indexOf(dragSrc);
+        const tgtIdx = children.indexOf(target);
+        if (srcIdx === -1 || tgtIdx === -1) return;
+        if (srcIdx < tgtIdx) {
+          grid.insertBefore(dragSrc, target.nextSibling);
+        } else {
+          grid.insertBefore(dragSrc, target);
+        }
+      });
+    });
+  }
+
+  // Restore saved orders — main grids first, then overlays will follow via sync
+  GRID_PAIRS.forEach(([mainId]) => {
+    const main = document.getElementById(mainId);
+    if (main) restoreOrder(main);
+    const overlay = document.getElementById('overlay-' + mainId.replace('grid-', 'grid-'));
+    // sync overlay to match main
+    const overlayEl = document.getElementById(mainId.replace('grid-', 'overlay-grid-'));
+    if (main && overlayEl) {
+      const order = [...main.querySelectorAll(':scope > [data-wid]')].map(w => w.dataset.wid);
+      applyOrder(overlayEl, order);
+    }
+  });
+
+  initDragDrop();
+  // ── End Drag & Drop ───────────────────────────────────────
+
+
+  // ── Settings Panel ────────────────────────────────────────
+  function showSettings() {
+    event.stopPropagation();
+    document.getElementById('settings-panel').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    // Pre-fill saved key
+    const saved = localStorage.getItem('chp-airtable-key') || '';
+    document.getElementById('at-key-input').value = saved ? '••••••••••••••••' + saved.slice(-4) : '';
+  }
+
+  function closeSettings() {
+    document.getElementById('settings-panel').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function saveSettings() {
+    const val = document.getElementById('at-key-input').value.trim();
+    if (val && !val.startsWith('••')) {
+      localStorage.setItem('chp-airtable-key', val);
+    }
+    closeSettings();
+    loadAllData();
+  }
+
+  function getKey() {
+    return localStorage.getItem('chp-airtable-key') || '';
+  }
+  // ── End Settings Panel ────────────────────────────────────
+
+  // ── Airtable Data Layer ───────────────────────────────────
+  const BASE_ID = 'appFqRzBD5VJUFUEy';
+
+  async function airtableFetch(tableId, fields, pageSize = 20, sort = null) {
+    const key = getKey();
+    if (!key) { console.warn('CHP: No API key found'); return null; }
+    let url = `https://api.airtable.com/v0/${BASE_ID}/${tableId}?pageSize=${pageSize}`;
+    fields.forEach(f => url += `&fields%5B%5D=${encodeURIComponent(f)}`);
+    if (sort) url += `&sort%5B0%5D%5Bfield%5D=${encodeURIComponent(sort.field)}&sort%5B0%5D%5Bdirection%5D=${sort.dir}`;
+    try {
+      const res = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${key}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!res.ok) {
+        const err = await res.text();
+        console.error('CHP Airtable error:', res.status, err);
+        return null;
+      }
+      return await res.json();
+    } catch(e) {
+      console.error('CHP fetch failed:', e);
+      return null;
+    }
+  }
+
+  function fmt(n) {
+    if (!n && n !== 0) return '—';
+    return '$' + Math.round(n).toLocaleString();
+  }
+
+  function fmtDate(d) {
+    if (!d) return '—';
+    const dt = new Date(d + 'T12:00:00');
+    return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function statusDot(status) {
+    const colors = {
+      'Balance Paid in FULL': '#00ff88',
+      'Deposit Received': '#ffd700',
+      'Contract Sent': '#4d9fff',
+      'Inquiry': '#aaaaaa',
+      'Cancelled': '#ff4466',
+    };
+    const c = colors[status] || '#aaaaaa';
+    return `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${c};margin-right:6px;box-shadow:0 0 6px ${c};"></span>`;
+  }
+
+  // ── Product Data ──────────────────────────────────────────
+  // Field IDs — Events table
+  const EV_NAME    = 'fldXuFjImL9lecB8c';
+  const EV_STATUS  = 'fldag6cKg8OA2woNS';
+  const EV_DATE    = 'fld2KJZF6RVGYFq2v';
+  const EV_PKG     = 'fldUE1Y7I0HYgU1qU';  // Package Total
+  const EV_PROFIT  = 'fldhUjtsakOgg9e9b';  // Gross Profit
+  const EV_TALENT  = 'fldPe6BNOhTIQ0Uw5';  // # Performers
+  const EV_PAYOUTS = 'fld5RCPj24JCnK6W8';  // Team Payouts
+  const EV_BUILD   = 'fldZzZ6Djf3TxkxUB';  // Build Costs
+  const EV_TRAVEL  = 'fldiuSi7uTcBwzxMU';  // Actual Travel
+  const EV_MGMT   = 'fldbqgXLZxNfyfVv7';  // 20% Mgmt Fee
+
+  const STATUS_COLORS = {
+    'Balance Paid in FULL':       '#00ff88',
+    'Positions Filled':           '#4d9fff',
+    'Event Booked with deposit':  '#ffd700',
+    'Contract / Invoice Sent':    '#ff9944',
+    'Verbal Confirmation':        '#c070d0',
+    'Proposal Sent':              '#88aaff',
+    'Partial Balance Paid':       '#ffaa44',
+    'LEAD LOST':                  '#444',
+    'Inquiry':                    '#888',
+  };
+
+  async function loadProductData() {
+    const key = getKey();
+    if (!key) return;
+
+    // Fetch all events + costume orders in parallel
+    const [eventsData, costumeData] = await Promise.all([
+      airtableFetch('tblQ070cBDSYHZh04',
+        [EV_NAME, EV_STATUS, EV_DATE, EV_PKG, EV_PROFIT, EV_TALENT, EV_PAYOUTS, EV_BUILD, EV_TRAVEL, EV_MGMT],
+        100, { field: EV_DATE, dir: 'asc' }),
+      airtableFetch('tblEiuHarMvv9cJVq',
+        ['Name', 'Status', 'DUE DATE', 'Order Total'], 20),
+    ]);
+
+    if (!eventsData || !eventsData.records) return;
+
+    // Filter to upcoming events only (today and future), skip LEAD LOST
+    const today = new Date(); today.setHours(0,0,0,0);
+    const upcoming = eventsData.records.filter(r => {
+      const d = r.cellValuesByFieldId[EV_DATE];
+      const status = r.cellValuesByFieldId[EV_STATUS]?.name || '';
+      return d && new Date(d + 'T12:00:00') >= today && status !== 'LEAD LOST';
+    });
+
+    // ── Summary widgets ───────────────────────────────────
+    const totalPkg     = upcoming.reduce((s,r) => s + (r.cellValuesByFieldId[EV_PKG] || 0), 0);
+    const totalPayouts = upcoming.reduce((s,r) => s + (r.cellValuesByFieldId[EV_PAYOUTS] || 0), 0);
+    const totalBuild   = upcoming.reduce((s,r) => s + (r.cellValuesByFieldId[EV_BUILD] || 0), 0);
+    const totalTravel  = upcoming.reduce((s,r) => s + (r.cellValuesByFieldId[EV_TRAVEL] || 0), 0);
+    const totalCOGS    = totalPayouts + totalBuild + totalTravel;
+    const totalProfit  = upcoming.reduce((s,r) => s + (r.cellValuesByFieldId[EV_PROFIT] || 0), 0);
+
+    setWid('product-bookings-count', upcoming.length, `upcoming events · ${eventsData.metadata?.totalRecordCount || ''} total`);
+    setWid('product-revenue-value',  fmt(totalPkg), 'total package value');
+    setWid('product-cogs-value',     fmt(totalCOGS), `payouts + build + travel`);
+    setWid('product-talent-count',   fmt(totalProfit), 'estimated gross profit');
+    setWid('product-costume-count',  fmt(totalPayouts), 'talent payouts');
+
+    // ── Event cards (main quadrant — horizontal scroll) ───
+    const cardsHtml = upcoming.map(r => {
+      const f      = r.cellValuesByFieldId;
+      const name   = (f[EV_NAME] || '—').trim();
+      const date   = fmtDate(f[EV_DATE]);
+      const status = f[EV_STATUS]?.name || '';
+      const dot    = STATUS_COLORS[status] || '#888';
+      const pkg    = f[EV_PKG] || 0;
+      const payouts= f[EV_PAYOUTS] || 0;
+      const build  = f[EV_BUILD] || 0;
+      const travel = f[EV_TRAVEL] || 0;
+      const profit = f[EV_PROFIT] || 0;
+      const talent = f[EV_TALENT] || 0;
+      const cogs   = payouts + build + travel;
+      const margin = pkg > 0 ? Math.round((profit / pkg) * 100) : 0;
+      const marginColor = margin >= 40 ? '#00ff88' : margin >= 20 ? '#ffd700' : '#ff4466';
+      return `<div class="event-card" style="border-color:${dot}33;">
+        <div class="event-card-header" style="border-bottom-color:${dot}44;">
+          <span class="event-card-dot" style="background:${dot};box-shadow:0 0 5px ${dot}"></span>
+          <span class="event-card-name">${name}</span>
+        </div>
+        <div class="event-card-date">${date}</div>
+        <div class="event-card-status" style="color:${dot}">${status}</div>
+        <div class="event-card-divider"></div>
+        <div class="event-card-stat"><span class="event-card-label">Package</span><span class="event-card-val" style="color:var(--product-blue)">${fmt(pkg)}</span></div>
+        <div class="event-card-stat"><span class="event-card-label">Talent</span><span class="event-card-val">${fmt(payouts)}</span></div>
+        <div class="event-card-stat"><span class="event-card-label">Build</span><span class="event-card-val">${build ? fmt(build) : '—'}</span></div>
+        <div class="event-card-stat"><span class="event-card-label">Travel</span><span class="event-card-val">${travel ? fmt(travel) : '—'}</span></div>
+        <div class="event-card-divider"></div>
+        <div class="event-card-stat"><span class="event-card-label">COGS</span><span class="event-card-val">${fmt(cogs)}</span></div>
+        <div class="event-card-profit" style="color:${marginColor}">${fmt(profit)} <span style="font-size:10px;opacity:0.7;">${margin}%</span></div>
+        <div class="event-card-talent">${talent} performer${talent !== 1 ? 's' : ''}</div>
+      </div>`;
+    }).join('');
+    setEl('product-event-cards', cardsHtml || '<div style="padding:20px;color:rgba(210,200,240,0.4);font-family:\'Orbitron\',sans-serif;font-size:10px;letter-spacing:0.1em;">NO UPCOMING EVENTS</div>');
+
+    // ── Event rows for overlay ────────────────────────────
+    const eventRowsHtml = upcoming.map(r => {
+      const f     = r.cellValuesByFieldId;
+      const name   = (f[EV_NAME] || '—').trim();
+      const date   = fmtDate(f[EV_DATE]);
+      const status = f[EV_STATUS]?.name || '';
+      const dot    = STATUS_COLORS[status] || '#888';
+      const pkg    = f[EV_PKG] || 0;
+      const payouts= f[EV_PAYOUTS] || 0;
+      const build  = f[EV_BUILD] || 0;
+      const travel = f[EV_TRAVEL] || 0;
+      const profit = f[EV_PROFIT] || 0;
+      const talent = f[EV_TALENT] || 0;
+      const cogs   = payouts + build + travel;
+      const margin = pkg > 0 ? Math.round((profit / pkg) * 100) : 0;
+      const marginColor = margin >= 40 ? '#00ff88' : margin >= 20 ? '#ffd700' : '#ff4466';
+
+      return `<div class="event-row">
+        <div class="event-row-main">
+          <span class="event-dot" style="background:${dot};box-shadow:0 0 6px ${dot}"></span>
+          <span class="event-name">${name}</span>
+          <span class="event-date">${date}</span>
+          <span class="event-status" style="color:${dot}">${status}</span>
+        </div>
+        <div class="event-row-costs">
+          <div class="cost-cell"><div class="cost-label">Package</div><div class="cost-val">${fmt(pkg)}</div></div>
+          <div class="cost-cell"><div class="cost-label">Talent</div><div class="cost-val">${fmt(payouts)}</div></div>
+          <div class="cost-cell"><div class="cost-label">Build</div><div class="cost-val">${build ? fmt(build) : '—'}</div></div>
+          <div class="cost-cell"><div class="cost-label">Travel</div><div class="cost-val">${travel ? fmt(travel) : '—'}</div></div>
+          <div class="cost-cell"><div class="cost-label">COGS</div><div class="cost-val">${fmt(cogs)}</div></div>
+          <div class="cost-cell"><div class="cost-label">Profit</div><div class="cost-val" style="color:${marginColor}">${fmt(profit)}</div></div>
+          <div class="cost-cell"><div class="cost-label">Margin</div><div class="cost-val" style="color:${marginColor}">${margin}%</div></div>
+          <div class="cost-cell"><div class="cost-label">Talent #</div><div class="cost-val">${talent}</div></div>
+        </div>
+      </div>`;
+    }).join('');
+
+    setEl('product-events-table', eventRowsHtml || '<div class="widget-sub" style="padding:12px 0;">No upcoming events found.</div>');
+
+    // ── Costume orders ────────────────────────────────────
+    if (costumeData && costumeData.records) {
+      const inProd = costumeData.records.filter(r =>
+        !r.cellValuesByFieldId['fldMcmmVD5FmzuNvI']?.name?.toLowerCase().includes('complete'));
+      setWid('product-costume-count', fmt(totalPayouts), 'talent payouts'); // reuse for payouts
+    }
+  }
+
+  function setProductPlaceholders() {}
+
+
+  function setWid(id, val, sub) {
+    // Update both main quadrant and overlay versions
+    [id, id + '-ov'].forEach(targetId => {
+      const el = document.getElementById(targetId);
+      if (!el) return;
+      const valEl = el.querySelector('.widget-value, .overlay-widget-value, .live-val');
+      const subEl = el.querySelector('.widget-sub, .live-sub');
+      if (valEl) valEl.textContent = val;
+      if (subEl && sub !== undefined) subEl.textContent = sub;
+    });
+  }
+
+  function setEl(id, html) {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = html;
+  }
+
+  async function loadAllData() {
+    await loadProductData();
+    // Sales, Brand, Ops data loaders will be added here
+  }
+
+  // Auto-load on page ready
+  window.addEventListener('DOMContentLoaded', () => {
+    if (getKey()) loadAllData();
+  });
+  if (document.readyState !== 'loading') {
+    if (getKey()) loadAllData();
+  }
+
+  // Refresh button triggers reload
+  function refreshDashboard() {
+    const btn = document.getElementById('refresh-btn');
+    btn.classList.add('spinning');
+    btn.addEventListener('animationend', () => btn.classList.remove('spinning'), { once: true });
+    loadAllData();
+  }
+
 </script>
+
+<!-- Settings Panel -->
+<div class="expanded-overlay" id="settings-panel" style="z-index:300;">
+  <div class="overlay-header" style="border-bottom-color:rgba(255,255,255,0.15);">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="width:3px;height:28px;border-radius:2px;background:#ffffff;opacity:0.4;"></div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:20px;font-weight:700;letter-spacing:0.2em;color:#fff;">SETTINGS</div>
+    </div>
+    <button class="close-btn" onclick="closeSettings()">✕</button>
+  </div>
+  <div class="overlay-content" style="grid-template-columns:1fr;max-width:600px;margin:0 auto;">
+    <div class="overlay-widget" style="gap:14px;">
+      <div class="overlay-widget-title">Airtable API Key</div>
+      <input id="at-key-input" type="password" placeholder="Enter your Airtable personal access token..."
+        style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px 14px;font-family:'Rajdhani',sans-serif;font-size:14px;color:#fff;outline:none;">
+      <div class="widget-sub" style="font-size:12px;">Found in Airtable → Profile → Developer Hub → Personal access tokens. Needs data.records:read scope on your MAIN base.</div>
+    </div>
+    <div class="overlay-widget" style="opacity:0.5;gap:14px;">
+      <div class="overlay-widget-title">QuickBooks (coming soon)</div>
+      <div class="widget-sub">Client ID and Secret from developer.intuit.com</div>
+    </div>
+    <div class="overlay-widget" style="opacity:0.5;gap:14px;">
+      <div class="overlay-widget-title">Google Drive (coming soon)</div>
+      <div class="widget-sub">Folder links per department</div>
+    </div>
+    <div style="display:flex;gap:12px;padding:0 0 8px;">
+      <button onclick="saveSettings()" style="flex:1;padding:12px;border-radius:8px;border:1px solid var(--product-blue);background:transparent;color:var(--product-blue);font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:0.15em;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(77,159,255,0.1)'" onmouseout="this.style.background='transparent'">SAVE & CONNECT</button>
+      <button onclick="closeSettings()" style="padding:12px 20px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.5);font-family:'Orbitron',sans-serif;font-size:11px;cursor:pointer;">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- Shared CSS for live data -->
+<style>
+  /* Event cards — horizontal scroll in product quadrant */
+  .event-card {
+    flex-shrink: 0;
+    width: 160px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(77,159,255,0.2);
+    border-radius: 8px;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .event-card:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(77,159,255,0.45);
+  }
+  .event-card-header {
+    padding: 10px 10px 7px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+  }
+  .event-card-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .event-card-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.3;
+    font-family: 'Rajdhani', sans-serif;
+  }
+  .event-card-date {
+    padding: 6px 10px 2px;
+    font-size: 10px;
+    color: rgba(210,200,240,0.6);
+    font-family: 'Rajdhani', sans-serif;
+  }
+  .event-card-status {
+    padding: 0 10px 6px;
+    font-size: 9px;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .event-card-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin: 2px 0;
+  }
+  .event-card-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px 10px;
+  }
+  .event-card-label {
+    font-size: 8px;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 0.08em;
+    color: rgba(210,200,240,0.4);
+    text-transform: uppercase;
+  }
+  .event-card-val {
+    font-size: 11px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    color: rgba(220,210,245,0.9);
+  }
+  .event-card-profit {
+    padding: 6px 10px 2px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .event-card-talent {
+    padding: 2px 10px 10px;
+    font-size: 10px;
+    color: rgba(210,200,240,0.5);
+    font-family: 'Rajdhani', sans-serif;
+  }
+
+  /* Scrollbar styling for event cards */
+  #product-event-cards::-webkit-scrollbar { height: 3px; }
+  #product-event-cards::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
+  #product-event-cards::-webkit-scrollbar-thumb { background: rgba(77,159,255,0.3); border-radius: 2px; }
+    display:flex;gap:8px;padding:8px 16px;
+    font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:0.1em;
+    color:rgba(210,200,240,0.5);text-transform:uppercase;
+    border-bottom:1px solid rgba(255,255,255,0.07);
+    background:rgba(255,255,255,0.02);
+  }
+  .event-table-header span { flex:1;min-width:0; }
+  .event-table-header span:first-child { flex:2;min-width:160px; }
+
+  .event-row {
+    border-bottom:1px solid rgba(255,255,255,0.05);
+    transition:background 0.15s;
+  }
+  .event-row:hover { background:rgba(255,255,255,0.04); }
+  .event-row:last-child { border-bottom:none; }
+
+  .event-row-main {
+    display:flex;align-items:center;gap:10px;
+    padding:10px 16px 4px;
+  }
+  .event-dot {
+    width:8px;height:8px;border-radius:50%;flex-shrink:0;
+  }
+  .event-name {
+    font-size:13px;font-weight:600;color:#fff;
+    flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .event-date {
+    font-size:11px;color:rgba(210,200,240,0.6);white-space:nowrap;
+    font-family:'Rajdhani',sans-serif;
+  }
+  .event-status {
+    font-size:10px;font-family:'Orbitron',sans-serif;
+    letter-spacing:0.05em;white-space:nowrap;
+    padding:2px 8px;border-radius:3px;background:rgba(255,255,255,0.05);
+  }
+  .event-row-costs {
+    display:flex;gap:0;padding:4px 16px 10px;
+  }
+  .cost-cell {
+    flex:1;min-width:0;padding:4px 8px 4px 0;
+  }
+  .cost-cell:first-child { flex:2;min-width:160px; }
+  .cost-label {
+    font-family:'Orbitron',sans-serif;font-size:8px;
+    letter-spacing:0.1em;color:rgba(210,200,240,0.4);
+    text-transform:uppercase;margin-bottom:2px;
+  }
+  .cost-val {
+    font-family:'Orbitron',sans-serif;font-size:12px;
+    font-weight:600;color:rgba(220,210,245,0.9);
+  }
+    display:flex;align-items:center;justify-content:space-between;
+    padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);
+    gap:8px;min-width:0;
+  }
+  .data-row:last-child { border-bottom:none; }
+  .data-name { font-size:13px;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px; }
+  .talent-pill {
+    display:inline-block;padding:3px 10px;border-radius:4px;
+    background:rgba(77,159,255,0.12);border:1px solid rgba(77,159,255,0.25);
+    color:var(--product-blue);font-size:11px;font-family:'Rajdhani',sans-serif;
+    font-weight:600;margin:3px;
+  }
+  .live-val { font-family:'Orbitron',sans-serif;font-size:22px;font-weight:700;color:#fff; }
+  .live-sub { font-size:12px;color:rgba(210,200,240,0.85);font-family:'Rajdhani',sans-serif;font-weight:500; }
+</style>
 </body>
 </html>
