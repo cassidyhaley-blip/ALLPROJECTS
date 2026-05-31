@@ -1942,18 +1942,19 @@
     // Filter to upcoming events only (today and future), skip LEAD LOST
     const today = new Date(); today.setHours(0,0,0,0);
     const upcoming = eventsData.records.filter(r => {
+      if (!r || !r.cellValuesByFieldId) return false;
       const d = r.cellValuesByFieldId[EV_DATE];
       const status = r.cellValuesByFieldId[EV_STATUS]?.name || '';
       return d && new Date(d + 'T12:00:00') >= today && status !== 'LEAD LOST';
     });
 
     // ── Summary widgets ───────────────────────────────────
-    const totalPkg     = upcoming.reduce((s,r) => s + (r.cellValuesByFieldId[EV_PKG] || 0), 0);
-    const totalPayouts = upcoming.reduce((s,r) => s + (r.cellValuesByFieldId[EV_PAYOUTS] || 0), 0);
-    const totalBuild   = upcoming.reduce((s,r) => s + (r.cellValuesByFieldId[EV_BUILD] || 0), 0);
-    const totalTravel  = upcoming.reduce((s,r) => s + (r.cellValuesByFieldId[EV_TRAVEL] || 0), 0);
+    const totalPkg     = upcoming.reduce((s,r) => s + ((r.cellValuesByFieldId||{})[EV_PKG] || 0), 0);
+    const totalPayouts = upcoming.reduce((s,r) => s + ((r.cellValuesByFieldId||{})[EV_PAYOUTS] || 0), 0);
+    const totalBuild   = upcoming.reduce((s,r) => s + ((r.cellValuesByFieldId||{})[EV_BUILD] || 0), 0);
+    const totalTravel  = upcoming.reduce((s,r) => s + ((r.cellValuesByFieldId||{})[EV_TRAVEL] || 0), 0);
     const totalCOGS    = totalPayouts + totalBuild + totalTravel;
-    const totalProfit  = upcoming.reduce((s,r) => s + (r.cellValuesByFieldId[EV_PROFIT] || 0), 0);
+    const totalProfit  = upcoming.reduce((s,r) => s + ((r.cellValuesByFieldId||{})[EV_PROFIT] || 0), 0);
 
     setWid('product-bookings-count', upcoming.length, `upcoming events · ${eventsData.metadata?.totalRecordCount || ''} total`);
     setWid('product-revenue-value',  fmt(totalPkg), 'total package value');
@@ -1962,7 +1963,7 @@
     setWid('product-costume-count',  fmt(totalPayouts), 'talent payouts');
 
     // ── Event cards (main quadrant — horizontal scroll) ───
-    const cardsHtml = upcoming.map(r => {
+    const cardsHtml = upcoming.filter(r => r && r.cellValuesByFieldId).map(r => {
       const f      = r.cellValuesByFieldId;
       const name   = (f[EV_NAME] || '—').trim();
       const date   = fmtDate(f[EV_DATE]);
@@ -1998,7 +1999,7 @@
     setEl('product-event-cards', cardsHtml || '<div style="padding:20px;color:rgba(210,200,240,0.4);font-family:\'Orbitron\',sans-serif;font-size:10px;letter-spacing:0.1em;">NO UPCOMING EVENTS</div>');
 
     // ── Event rows for overlay ────────────────────────────
-    const eventRowsHtml = upcoming.map(r => {
+    const eventRowsHtml = upcoming.filter(r => r && r.cellValuesByFieldId).map(r => {
       const f     = r.cellValuesByFieldId;
       const name   = (f[EV_NAME] || '—').trim();
       const date   = fmtDate(f[EV_DATE]);
