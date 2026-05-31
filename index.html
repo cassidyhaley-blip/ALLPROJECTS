@@ -1811,9 +1811,13 @@
     event.stopPropagation();
     document.getElementById('settings-panel').classList.add('active');
     document.body.style.overflow = 'hidden';
-    // Pre-fill saved key
+    const input = document.getElementById('at-key-input');
     const saved = localStorage.getItem('chp-airtable-key') || '';
-    document.getElementById('at-key-input').value = saved ? '••••••••••••••••' + saved.slice(-4) : '';
+    // Always show empty field — user must paste fresh to update
+    input.value = '';
+    input.placeholder = saved
+      ? `Key saved (ends ...${saved.slice(-4)}) — paste new key to update, or click Save to keep current`
+      : 'Paste your Airtable personal access token here...';
   }
 
   function closeSettings() {
@@ -1823,16 +1827,15 @@
 
   function saveSettings() {
     const val = document.getElementById('at-key-input').value.trim();
-    // Only save if it looks like a real key (not the masked placeholder)
-    if (val && !val.includes('•')) {
+    if (val && val.length > 10) {
+      // Real key pasted — save it
       localStorage.setItem('chp-airtable-key', val);
       console.log('CHP: API key saved, length:', val.length);
-    } else if (val.includes('•')) {
-      // User didn't change the masked value — existing key stays, just reload
-      console.log('CHP: Using existing API key');
+    } else if (!val) {
+      // Empty — keep existing key, just reload
+      console.log('CHP: Keeping existing API key');
     }
     closeSettings();
-    // Small delay to ensure settings panel is closed before loading
     setTimeout(loadAllData, 100);
   }
 
@@ -2096,8 +2099,10 @@
   <div class="overlay-content" style="grid-template-columns:1fr;max-width:600px;margin:0 auto;">
     <div class="overlay-widget" style="gap:14px;">
       <div class="overlay-widget-title">Airtable API Key</div>
-      <input id="at-key-input" type="password" placeholder="Enter your Airtable personal access token..."
-        style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px 14px;font-family:'Rajdhani',sans-serif;font-size:14px;color:#fff;outline:none;">
+      <input id="at-key-input" type="password" placeholder="Paste your Airtable personal access token..."
+        style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px 14px;font-family:'Rajdhani',sans-serif;font-size:14px;color:#fff;outline:none;"
+        onfocus="if(this.value.includes('•')){this.value='';}"
+        onpaste="setTimeout(()=>{this.dataset.pasted='1';},0)">
       <div class="widget-sub" style="font-size:12px;">Found in Airtable → Profile → Developer Hub → Personal access tokens. Needs data.records:read scope on your MAIN base.</div>
     </div>
     <div class="overlay-widget" style="opacity:0.5;gap:14px;">
