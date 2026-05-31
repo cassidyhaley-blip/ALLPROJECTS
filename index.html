@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cassidy Haley Productions — Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand-pink: #ff2d8a;
+    --brand-pink-glow: rgba(255, 45, 138, 0.4);
+    --brand-pink-dim: rgba(255, 45, 138, 0.15);
+    --sales-green: #00ff88;
+    --sales-green-glow: rgba(0, 255, 136, 0.4);
+    --sales-green-dim: rgba(0, 255, 136, 0.15);
+    --product-blue: #4d9fff;
+    --product-blue-glow: rgba(77, 159, 255, 0.4);
+    --product-blue-dim: rgba(77, 159, 255, 0.15);
+    --ops-cyan: #00e5ff;
+    --ops-cyan-glow: rgba(0, 229, 255, 0.4);
+    --ops-cyan-dim: rgba(0, 229, 255, 0.15);
+    --dark-base: #06040f;
+    --card-bg: rgba(10, 6, 24, 0.75);
+    --card-border: rgba(255,255,255,0.12);
+    --text-primary: #ffffff;
+    --text-muted: rgba(220, 210, 240, 0.8);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark-base);
+    font-family: 'Rajdhani', sans-serif;
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* Galaxy background */
+  .galaxy-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(180, 60, 160, 0.18) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 30%, rgba(60, 80, 220, 0.18) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 80%, rgba(120, 30, 100, 0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 70%, rgba(30, 60, 180, 0.12) 0%, transparent 45%),
+      #06040f;
+  }
+
+  .stars {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 45%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 40% 10%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 70%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 25%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 85% 55%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 80%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 90%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 10%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 85%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 5% 35%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 48% 48%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 92% 75%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 20% 95%, rgba(255,255,255,0.5) 0%, transparent 100%);
+  }
+
+  /* Nebula blobs */
+  .nebula {
+    position: fixed;
+    z-index: 0;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.12;
+    animation: nebula-drift 20s ease-in-out infinite alternate;
+  }
+  .nebula-1 { width: 600px; height: 400px; background: radial-gradient(ellipse, #c020a0, transparent); top: -100px; left: -100px; animation-delay: 0s; }
+  .nebula-2 { width: 500px; height: 500px; background: radial-gradient(ellipse, #4040dd, transparent); top: 30%; right: -100px; animation-delay: -5s; }
+  .nebula-3 { width: 700px; height: 300px; background: radial-gradient(ellipse, #8020c0, transparent); bottom: -50px; left: 20%; animation-delay: -10s; }
+
+  @keyframes nebula-drift {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(30px, 20px) scale(1.1); }
+  }
+
+  /* Layout */
+  .app {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(6, 4, 15, 0.6);
+    backdrop-filter: blur(20px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo-mark {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #ffe08a, #ffb0c8, #d080d0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 0 20px rgba(255, 140, 180, 0.5), 0 0 40px rgba(255, 140, 180, 0.2);
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .logo-mark::after {
+    content: '';
+  }
+
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+
+  .logo-text-main {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    background: linear-gradient(135deg, #ffe8f0, #ffc0d8, #e090c0, #c070d0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+  }
+
+  .logo-text-sub {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    color: var(--text-muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+
+  .header-center {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sales-green);
+    box-shadow: 0 0 10px var(--sales-green);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.8); }
+  }
+
+  .header-time {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    color: var(--text-primary);
+    letter-spacing: 0.1em;
+  }
+
+  .settings-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.2s;
+  }
+  .settings-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text-primary); }
+
+  /* Main grid */
+  .main-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 2px;
+    padding: 2px;
+    min-height: calc(100vh - 85px);
+  }
+
+  @media (max-width: 768px) {
+    .main-grid {
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(4, auto);
+      min-height: unset;
+    }
+    .q-product { order: 3; }
+    .q-ops { order: 4; }
+    .widget-grid {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+    .widget-grid-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+    .q-inner {
+      padding: 14px 14px 12px;
+    }
+    .logo-text-main {
+      font-size: 14px;
+    }
+    .overlay-content {
+      grid-template-columns: 1fr 1fr;
+      padding: 20px;
+    }
+    .overlay-widget.span-3 { grid-column: span 2; }
+    .header {
+      padding: 12px 16px;
+    }
+  }
+
+  /* Quadrant */
+  .quadrant {
+    position: relative;
+    background: rgba(8, 5, 20, 0.7);
+    backdrop-filter: blur(16px);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .quadrant::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.35s;
+    pointer-events: none;
+  }
+
+  .quadrant:hover::before { opacity: 1; }
+
+  .quadrant-border {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Neon corner borders */
+  .quadrant-border::before,
+  .quadrant-border::after {
+    content: '';
+    position: absolute;
+    transition: all 0.35s;
+  }
+
+  /* Brand quadrant — pink */
+  .q-brand { border: 1px solid rgba(255, 45, 138, 0.25); }
+  .q-brand::before { background: var(--brand-pink-dim); }
+  .q-brand:hover { border-color: rgba(255, 45, 138, 0.6); box-shadow: inset 0 0 60px rgba(255, 45, 138, 0.08); }
+  .q-brand .quadrant-border { box-shadow: inset 0 0 0 1px rgba(255, 45, 138, 0.15); }
+  .q-brand:hover .quadrant-border { box-shadow: inset 0 0 0 1px rgba(255, 45, 138, 0.5), 0 0 30px rgba(255, 45, 138, 0.3); }
+  .q-brand .dept-label { color: var(--brand-pink); text-shadow: 0 0 30px var(--brand-pink), 0 0 60px rgba(255,45,138,0.5); }
+  .q-brand .dept-line { background: var(--brand-pink); box-shadow: 0 0 10px var(--brand-pink); }
+  .q-brand .widget-accent { border-left-color: var(--brand-pink); }
+  .q-brand .expand-icon { color: var(--brand-pink); }
+  .q-brand .tag { background: var(--brand-pink-dim); border-color: rgba(255,45,138,0.3); color: var(--brand-pink); }
+  .q-brand .progress-fill { background: linear-gradient(90deg, var(--brand-pink), rgba(255,45,138,0.5)); box-shadow: 0 0 8px var(--brand-pink); }
+  .q-brand .task-check:checked + .task-label { color: var(--brand-pink); }
+
+  /* Sales quadrant — green */
+  .q-sales { border: 1px solid rgba(0, 255, 136, 0.25); }
+  .q-sales::before { background: var(--sales-green-dim); }
+  .q-sales:hover { border-color: rgba(0, 255, 136, 0.6); box-shadow: inset 0 0 60px rgba(0, 255, 136, 0.08); }
+  .q-sales .quadrant-border { box-shadow: inset 0 0 0 1px rgba(0, 255, 136, 0.15); }
+  .q-sales:hover .quadrant-border { box-shadow: inset 0 0 0 1px rgba(0, 255, 136, 0.5), 0 0 30px rgba(0, 255, 136, 0.3); }
+  .q-sales .dept-label { color: var(--sales-green); text-shadow: 0 0 30px var(--sales-green), 0 0 60px rgba(0,255,136,0.5); }
+  .q-sales .dept-line { background: var(--sales-green); box-shadow: 0 0 10px var(--sales-green); }
+  .q-sales .widget-accent { border-left-color: var(--sales-green); }
+  .q-sales .expand-icon { color: var(--sales-green); }
+  .q-sales .tag { background: var(--sales-green-dim); border-color: rgba(0,255,136,0.3); color: var(--sales-green); }
+  .q-sales .progress-fill { background: linear-gradient(90deg, var(--sales-green), rgba(0,255,136,0.5)); box-shadow: 0 0 8px var(--sales-green); }
+
+  /* Product quadrant — blue */
+  .q-product { border: 1px solid rgba(77, 159, 255, 0.25); }
+  .q-product::before { background: var(--product-blue-dim); }
+  .q-product:hover { border-color: rgba(77, 159, 255, 0.6); box-shadow: inset 0 0 60px rgba(77, 159, 255, 0.08); }
+  .q-product .quadrant-border { box-shadow: inset 0 0 0 1px rgba(77, 159, 255, 0.15); }
+  .q-product:hover .quadrant-border { box-shadow: inset 0 0 0 1px rgba(77, 159, 255, 0.5), 0 0 30px rgba(77, 159, 255, 0.3); }
+  .q-product .dept-label { color: var(--product-blue); text-shadow: 0 0 30px var(--product-blue), 0 0 60px rgba(77,159,255,0.5); }
+  .q-product .dept-line { background: var(--product-blue); box-shadow: 0 0 10px var(--product-blue); }
+  .q-product .widget-accent { border-left-color: var(--product-blue); }
+  .q-product .expand-icon { color: var(--product-blue); }
+  .q-product .tag { background: var(--product-blue-dim); border-color: rgba(77,159,255,0.3); color: var(--product-blue); }
+  .q-product .progress-fill { background: linear-gradient(90deg, var(--product-blue), rgba(77,159,255,0.5)); box-shadow: 0 0 8px var(--product-blue); }
+
+  /* Ops quadrant — cyan */
+  .q-ops { border: 1px solid rgba(0, 229, 255, 0.25); }
+  .q-ops::before { background: var(--ops-cyan-dim); }
+  .q-ops:hover { border-color: rgba(0, 229, 255, 0.6); box-shadow: inset 0 0 60px rgba(0, 229, 255, 0.08); }
+  .q-ops .quadrant-border { box-shadow: inset 0 0 0 1px rgba(0, 229, 255, 0.15); }
+  .q-ops:hover .quadrant-border { box-shadow: inset 0 0 0 1px rgba(0, 229, 255, 0.5), 0 0 30px rgba(0, 229, 255, 0.3); }
+  .q-ops .dept-label { color: var(--ops-cyan); text-shadow: 0 0 30px var(--ops-cyan), 0 0 60px rgba(0,229,255,0.5); }
+  .q-ops .dept-line { background: var(--ops-cyan); box-shadow: 0 0 10px var(--ops-cyan); }
+  .q-ops .widget-accent { border-left-color: var(--ops-cyan); }
+  .q-ops .expand-icon { color: var(--ops-cyan); }
+  .q-ops .tag { background: var(--ops-cyan-dim); border-color: rgba(0,229,255,0.3); color: var(--ops-cyan); }
+  .q-ops .progress-fill { background: linear-gradient(90deg, var(--ops-cyan), rgba(0,229,255,0.5)); box-shadow: 0 0 8px var(--ops-cyan); }
+
+  /* Quadrant inner */
+  .q-inner {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 22px 18px;
+    gap: 12px;
+  }
+
+  .q-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .dept-label-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .dept-line {
+    width: 3px;
+    height: 28px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .dept-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .expand-icon {
+    font-size: 18px;
+    opacity: 0.7;
+    transition: transform 0.3s, opacity 0.3s;
+  }
+  .quadrant:hover .expand-icon { opacity: 1; transform: scale(1.15); }
+
+  /* Widget grid */
+  .widget-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .widget-grid-2 { grid-template-columns: 1fr 1fr; }
+
+  .widget {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 11px 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .widget:hover { background: rgba(255,255,255,0.07); }
+
+  .widget.widget-accent {
+    border-left-width: 2px;
+  }
+
+  .widget-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: rgba(220, 210, 255, 0.9);
+    text-transform: uppercase;
+  }
+
+  .widget-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1;
+  }
+
+  .widget-value.sm { font-size: 15px; }
+  .widget-value.lg { font-size: 28px; }
+
+  .widget-sub {
+    font-size: 12px;
+    color: rgba(210, 200, 240, 0.85);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 3px;
+    border: 1px solid;
+    font-size: 9px;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 0.1em;
+    width: fit-content;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 3px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 2px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1s ease;
+  }
+
+  /* Mini chart bars */
+  .mini-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 32px;
+    margin-top: 2px;
+  }
+
+  .bar {
+    flex: 1;
+    border-radius: 2px 2px 0 0;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  .bar:hover { opacity: 1; }
+
+  /* Task list */
+  .task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: rgba(220, 210, 245, 0.9);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 2px 0;
+    transition: color 0.2s;
+  }
+
+  .task-item:hover { color: #ffffff; }
+
+  .task-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+
+  .task-item.done .task-dot { background: currentColor; }
+  .task-item.done span { text-decoration: line-through; opacity: 0.5; }
+
+  /* List items */
+  .list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 11px;
+    font-family: 'Rajdhani', sans-serif;
+  }
+
+  .list-item:last-child { border-bottom: none; }
+
+  .list-item-name { color: #ffffff; font-weight: 600; }
+  .list-item-meta { color: rgba(210, 200, 240, 0.85); font-size: 10px; }
+
+  /* Stat row */
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-label { color: rgba(210, 200, 240, 0.85); font-family: 'Rajdhani', sans-serif; font-weight: 500; }
+  .stat-val { color: #ffffff; font-family: 'Orbitron', sans-serif; font-size: 10px; }
+
+  /* Automation status */
+  .auto-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-family: 'Rajdhani', sans-serif;
+    color: var(--text-muted);
+    padding: 2px 0;
+  }
+  .auto-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .auto-dot.on { background: var(--sales-green); box-shadow: 0 0 6px var(--sales-green); }
+  .auto-dot.err { background: #ff4466; box-shadow: 0 0 6px #ff4466; }
+  .auto-dot.off { background: rgba(255,255,255,0.2); }
+
+  /* Expanded overlay */
+  .expanded-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: #f5f5f7;
+    animation: overlay-in 0.3s ease;
+    overflow-y: auto;
+  }
+
+  .expanded-overlay.active { display: flex; flex-direction: column; }
+
+  @keyframes overlay-in {
+    from { opacity: 0; transform: scale(0.97); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .overlay-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 36px;
+    border-bottom: 2px solid rgba(0,0,0,0.12);
+    flex-shrink: 0;
+    background: #ffffff;
+  }
+
+  .overlay-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+  }
+
+  .close-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.15);
+    background: rgba(0,0,0,0.05);
+    color: #333;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .close-btn:hover { background: rgba(0,0,0,0.1); }
+
+  .overlay-content {
+    flex: 1;
+    padding: 28px 36px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    align-content: start;
+  }
+
+  .overlay-widget {
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.09);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  }
+
+  .overlay-widget.span-2 { grid-column: span 2; }
+  .overlay-widget.span-3 { grid-column: span 3; }
+
+  .overlay-widget-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .overlay-widget-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+  }
+
+  /* Overlay-specific task and widget overrides */
+  .expanded-overlay .widget-sub {
+    color: #333;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .expanded-overlay .task-item {
+    color: #222;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .expanded-overlay .task-item:hover { color: #000; }
+  .expanded-overlay .task-item.done span { color: #888; text-decoration: line-through; }
+  .expanded-overlay .task-item.done .task-dot { background: #999; }
+
+  .expanded-overlay .auto-item {
+    color: #222;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 3px 0;
+  }
+
+  .expanded-overlay .task-input {
+    background: #f0f0f3;
+    border: 1px solid rgba(0,0,0,0.2);
+    color: #111;
+    font-size: 13px;
+  }
+
+  .expanded-overlay .task-input:focus { border-color: rgba(0,0,0,0.4); }
+  .expanded-overlay .task-input::placeholder { color: #999; }
+
+  .expanded-overlay .progress-bar {
+    background: rgba(0,0,0,0.1);
+  }
+
+  .expanded-overlay .list-item {
+    border-bottom-color: rgba(0,0,0,0.08);
+  }
+
+  .expanded-overlay .list-item-name { color: #111; font-weight: 600; font-size: 13px; }
+  .expanded-overlay .list-item-meta { color: #555; font-size: 12px; }
+
+  .expanded-overlay .overlay-widget-title {
+    color: #555;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+  }
+
+  .expanded-overlay .overlay-widget-value {
+    color: #111;
+  }
+
+  /* Add task input */
+  .add-task-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .task-input {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .task-input:focus { border-color: rgba(255,255,255,0.3); }
+  .task-input::placeholder { color: var(--text-muted); }
+
+  .add-btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid;
+    background: transparent;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .add-btn:hover { opacity: 0.8; }
+
+  /* Floating particles */
+  @keyframes float-particle {
+    0% { transform: translateY(0) translateX(0); opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 0.5; }
+    100% { transform: translateY(-120px) translateX(30px); opacity: 0; }
+  }
+
+  .settings-btn.spinning { animation: spin 0.6s linear; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  .entry-anim {
+    animation: entry-slide 0.5s cubic-bezier(0.4,0,0.2,1) both;
+  }
+
+  @keyframes entry-slide {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-brand { animation-delay: 0s; }
+  .q-sales { animation-delay: 0.08s; }
+  .q-product { animation-delay: 0.16s; }
+  .q-ops { animation-delay: 0.24s; }
+</style>
+</head>
+<body>
+
+<div class="galaxy-bg"></div>
+<div class="stars"></div>
+<div class="nebula nebula-1"></div>
+<div class="nebula nebula-2"></div>
+<div class="nebula nebula-3"></div>
+
+<div class="app">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo-area">
+      <div class="logo-mark"><img src="data:image/png;base64,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" style="width:48px;height:48px;border-radius:50%;object-fit:cover;" alt="CHP Logo"></div>
+      <div class="logo-text">
+        <div class="logo-text-main">CHP Command Center</div>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="status-dot"></div>
+      <span style="font-size:10px;color:var(--text-muted);font-family:'Orbitron',sans-serif;letter-spacing:0.1em;">LIVE</span>
+      <button class="settings-btn" onclick="refreshDashboard()" title="Refresh data" id="refresh-btn" style="font-size:18px;">↻</button>
+      <button class="settings-btn" onclick="showSettings()">⚙</button>
+    </div>
+  </header>
+
+  <!-- Main 2x2 Grid -->
+  <main class="main-grid">
+
+    <!-- BRAND — Top Left -->
+    <div class="quadrant q-brand entry-anim" onclick="openQuadrant('brand')">
+      <div class="quadrant-border"></div>
+      <div class="q-inner">
+        <div class="q-header">
+          <div class="dept-label-wrap">
+            <div class="dept-line"></div>
+            <div class="dept-label">Brand</div>
+          </div>
+          <span class="expand-icon">⤢</span>
+        </div>
+
+        <div class="widget-grid">
+          <!-- Social Stats -->
+          <div class="widget widget-accent">
+            <div class="widget-label">Social Reach</div>
+            <div class="widget-value sm">—</div>
+            <div class="widget-sub">Connect Instagram</div>
+            <div class="mini-chart">
+              <div class="bar" style="height:40%;background:var(--brand-pink)"></div>
+              <div class="bar" style="height:55%;background:var(--brand-pink)"></div>
+              <div class="bar" style="height:45%;background:var(--brand-pink)"></div>
+              <div class="bar" style="height:70%;background:var(--brand-pink)"></div>
+              <div class="bar" style="height:60%;background:var(--brand-pink)"></div>
+              <div class="bar" style="height:85%;background:var(--brand-pink)"></div>
+              <div class="bar" style="height:75%;background:var(--brand-pink)"></div>
+            </div>
+          </div>
+
+          <!-- Web Stats -->
+          <div class="widget">
+            <div class="widget-label">Web Stats</div>
+            <div class="widget-value sm">—</div>
+            <div class="widget-sub">Connect Analytics</div>
+          </div>
+
+          <!-- Team -->
+          <div class="widget">
+            <div class="widget-label">Team</div>
+            <div class="widget-value lg" style="color:var(--brand-pink)">—</div>
+            <div class="widget-sub">Brand members</div>
+          </div>
+
+          <!-- Assets -->
+          <div class="widget widget-accent" style="grid-column: span 2;">
+            <div class="widget-label">Asset Folders</div>
+            <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;">
+              <span class="tag">📁 Google Drive</span>
+              <span class="tag">🎨 Canva</span>
+              <span class="tag">📸 Photos</span>
+            </div>
+            <div class="widget-sub" style="margin-top:4px;">Link folders in settings</div>
+          </div>
+
+          <!-- PR Docs -->
+          <div class="widget">
+            <div class="widget-label">PR Docs</div>
+            <div class="widget-value sm">—</div>
+            <div class="widget-sub">Active campaigns</div>
+          </div>
+
+          <!-- Tasks -->
+          <div class="widget" style="grid-column:span 2;">
+            <div class="widget-label">Brand Tasks</div>
+            <div class="task-list">
+              <div class="task-item" onclick="toggleTask(this)">
+                <div class="task-dot"></div>
+                <span>Update brand kit in Canva</span>
+              </div>
+              <div class="task-item done" onclick="toggleTask(this)">
+                <div class="task-dot"></div>
+                <span>Schedule Instagram posts — week of June 2</span>
+              </div>
+              <div class="task-item" onclick="toggleTask(this)">
+                <div class="task-dot"></div>
+                <span>Send PR kit to venue contact</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SALES — Top Right -->
+    <div class="quadrant q-sales entry-anim" onclick="openQuadrant('sales')">
+      <div class="quadrant-border"></div>
+      <div class="q-inner">
+        <div class="q-header">
+          <div class="dept-label-wrap">
+            <div class="dept-line"></div>
+            <div class="dept-label">Sales</div>
+          </div>
+          <span class="expand-icon">⤢</span>
+        </div>
+
+        <div class="widget-grid">
+          <!-- Revenue -->
+          <div class="widget widget-accent">
+            <div class="widget-label">Revenue MTD</div>
+            <div class="widget-value sm" style="color:var(--sales-green)">—</div>
+            <div class="widget-sub">Connect QuickBooks</div>
+            <div class="mini-chart">
+              <div class="bar" style="height:30%;background:var(--sales-green)"></div>
+              <div class="bar" style="height:50%;background:var(--sales-green)"></div>
+              <div class="bar" style="height:65%;background:var(--sales-green)"></div>
+              <div class="bar" style="height:45%;background:var(--sales-green)"></div>
+              <div class="bar" style="height:80%;background:var(--sales-green)"></div>
+              <div class="bar" style="height:70%;background:var(--sales-green)"></div>
+              <div class="bar" style="height:90%;background:var(--sales-green)"></div>
+            </div>
+          </div>
+
+          <!-- Pipeline -->
+          <div class="widget">
+            <div class="widget-label">Inquiries</div>
+            <div class="widget-value lg" style="color:var(--sales-green)">—</div>
+            <div class="widget-sub">Active leads</div>
+          </div>
+
+          <!-- Target -->
+          <div class="widget">
+            <div class="widget-label">Sales Target</div>
+            <div class="widget-value sm">—%</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+            <div class="widget-sub">To monthly goal</div>
+          </div>
+
+          <!-- Client Pipeline -->
+          <div class="widget" style="grid-column:span 2;">
+            <div class="widget-label">Active Clients</div>
+            <div class="list-item">
+              <span class="list-item-name">—</span>
+              <span class="list-item-meta">Connect Airtable</span>
+            </div>
+            <div class="list-item">
+              <span class="list-item-name">—</span>
+              <span class="list-item-meta">to see client data</span>
+            </div>
+          </div>
+
+          <!-- Tasks -->
+          <div class="widget" style="grid-column:span 2;">
+            <div class="widget-label">Sales Tasks</div>
+            <div class="task-list">
+              <div class="task-item" onclick="toggleTask(this)">
+                <div class="task-dot"></div>
+                <span>Follow up — June 14th inquiry</span>
+              </div>
+              <div class="task-item" onclick="toggleTask(this)">
+                <div class="task-dot"></div>
+                <span>Build Midsummer Night package proposal</span>
+              </div>
+              <div class="task-item done" onclick="toggleTask(this)">
+                <div class="task-dot"></div>
+                <span>Send contract — Smith Corporate Event</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCT — Bottom Right -->
+    <div class="quadrant q-product entry-anim" onclick="openQuadrant('product')">
+      <div class="quadrant-border"></div>
+      <div class="q-inner">
+        <div class="q-header">
+          <div class="dept-label-wrap">
+            <div class="dept-line"></div>
+            <div class="dept-label">Product</div>
+          </div>
+          <span class="expand-icon">⤢</span>
+        </div>
+
+        <div class="widget-grid">
+          <!-- Bookings -->
+          <div class="widget widget-accent">
+            <div class="widget-label">Bookings</div>
+            <div class="widget-value lg" style="color:var(--product-blue)">—</div>
+            <div class="widget-sub">Upcoming events</div>
+          </div>
+
+          <!-- Talent -->
+          <div class="widget">
+            <div class="widget-label">Talent Pool</div>
+            <div class="widget-value lg" style="color:var(--product-blue)">—</div>
+            <div class="widget-sub">Active performers</div>
+          </div>
+
+          <!-- Costumes -->
+          <div class="widget">
+            <div class="widget-label">Costume Orders</div>
+            <div class="widget-value sm">— in prod.</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+            <div class="widget-sub">Production status</div>
+          </div>
+
+          <!-- Packages -->
+          <div class="widget" style="grid-column:span 2;">
+            <div class="widget-label">Entertainment Packages</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
+              <span class="tag">Connect Airtable</span>
+            </div>
+            <div class="widget-sub" style="margin-top:4px;">Packages will display here</div>
+          </div>
+
+          <!-- COGS -->
+          <div class="widget">
+            <div class="widget-label">COGS</div>
+            <div class="widget-value sm">—</div>
+            <div class="widget-sub">Cost of goods</div>
+          </div>
+
+          <!-- Tasks -->
+          <div class="widget" style="grid-column:span 2;">
+            <div class="widget-label">Product Tasks</div>
+            <div class="task-list">
+              <div class="task-item" onclick="toggleTask(this)">
+                <div class="task-dot"></div>
+                <span>Finalize costume order — July 4th event</span>
+              </div>
+              <div class="task-item" onclick="toggleTask(this)">
+                <div class="task-dot"></div>
+                <span>Confirm talent roster — Gala booking</span>
+              </div>
+              <div class="task-item done" onclick="toggleTask(this)">
+                <div class="task-dot"></div>
+                <span>Content capture — June 1st event</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPS — Bottom Left -->
+    <div class="quadrant q-ops entry-anim" onclick="openQuadrant('ops')">
+      <div class="quadrant-border"></div>
+      <div class="q-inner">
+        <div class="q-header">
+          <div class="dept-label-wrap">
+            <div class="dept-line"></div>
+            <div class="dept-label">Ops</div>
+          </div>
+          <span class="expand-icon">⤢</span>
+        </div>
+
+        <div class="widget-grid">
+          <!-- Financial Snapshot -->
+          <div class="widget widget-accent">
+            <div class="widget-label">Biz Snapshot</div>
+            <div class="widget-value sm" style="color:var(--ops-cyan)">—</div>
+            <div class="widget-sub">Connect QuickBooks</div>
+          </div>
+
+          <!-- P&L -->
+          <div class="widget">
+            <div class="widget-label">P & L</div>
+            <div class="widget-value sm">—</div>
+            <div class="widget-sub">This quarter</div>
+          </div>
+
+          <!-- Payroll -->
+          <div class="widget">
+            <div class="widget-label">Payroll</div>
+            <div class="widget-value sm">—</div>
+            <div class="widget-sub">Next run date</div>
+          </div>
+
+          <!-- Automations -->
+          <div class="widget" style="grid-column:span 2;">
+            <div class="widget-label">Automations — Make.com</div>
+            <div style="margin-top:4px;">
+              <div class="auto-item"><div class="auto-dot on"></div>Booking Contract Automation</div>
+              <div class="auto-item"><div class="auto-dot on"></div>Client Invoice & Contract Gen</div>
+              <div class="auto-item"><div class="auto-dot on"></div>POST TO INSTAGRAM</div>
+              <div class="auto-item"><div class="auto-dot err"></div>Client Balance Invoice <span style="color:#ff4466;font-size:9px;margin-left:4px;">⚠ 7 errors</span></div>
+              <div class="auto-item"><div class="auto-dot off"></div>Availability Check (inactive)</div>
+            </div>
+          </div>
+
+          <!-- Team Mgmt -->
+          <div class="widget">
+            <div class="widget-label">Team</div>
+            <div class="widget-value lg" style="color:var(--ops-cyan)">—</div>
+            <div class="widget-sub">Active members</div>
+          </div>
+
+          <!-- Tasks -->
+          <div class="widget" style="grid-column:span 2;">
+            <div class="widget-label">Ops Tasks</div>
+            <div class="task-list">
+              <div class="task-item" onclick="toggleTask(this)">
+                <div class="task-dot"></div>
+                <span>Fix Client Balance Invoice automation</span>
+              </div>
+              <div class="task-item" onclick="toggleTask(this)">
+                <div class="task-dot"></div>
+                <span>Review upcoming payroll — June 15</span>
+              </div>
+              <div class="task-item done" onclick="toggleTask(this)">
+                <div class="task-dot"></div>
+                <span>Connect QuickBooks API</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Expanded overlays -->
+<div class="expanded-overlay" id="overlay-brand">
+  <div class="overlay-header">
+    <div class="overlay-title" style="color:var(--brand-pink);text-shadow:0 0 30px var(--brand-pink)">BRAND</div>
+    <button class="close-btn" onclick="closeOverlay('brand')">✕</button>
+  </div>
+  <div class="overlay-content">
+    <div class="overlay-widget">
+      <div class="overlay-widget-title">Social Reach</div>
+      <div class="overlay-widget-value" style="color:var(--brand-pink)">—</div>
+      <div class="widget-sub">Connect Instagram API</div>
+    </div>
+    <div class="overlay-widget">
+      <div class="overlay-widget-title">Web Traffic</div>
+      <div class="overlay-widget-value" style="color:var(--brand-pink)">—</div>
+      <div class="widget-sub">Connect Google Analytics</div>
+    </div>
+    <div class="overlay-widget">
+      <div class="overlay-widget-title">Active Campaigns</div>
+      <div class="overlay-widget-value" style="color:var(--brand-pink)">—</div>
+      <div class="widget-sub">PR & social campaigns</div>
+    </div>
+    <div class="overlay-widget span-2">
+      <div class="overlay-widget-title">Asset Folders</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+        <span class="tag" style="background:var(--brand-pink-dim);border-color:rgba(255,45,138,0.3);color:var(--brand-pink);">📁 Brand Guidelines</span>
+        <span class="tag" style="background:var(--brand-pink-dim);border-color:rgba(255,45,138,0.3);color:var(--brand-pink);">📷 Photo Library</span>
+        <span class="tag" style="background:var(--brand-pink-dim);border-color:rgba(255,45,138,0.3);color:var(--brand-pink);">🎨 Canva Workspace</span>
+        <span class="tag" style="background:var(--brand-pink-dim);border-color:rgba(255,45,138,0.3);color:var(--brand-pink);">📄 PR Docs</span>
+      </div>
+      <div class="widget-sub" style="margin-top:10px;">Link your Google Drive folders in settings</div>
+    </div>
+    <div class="overlay-widget">
+      <div class="overlay-widget-title">Brand Team</div>
+      <div class="overlay-widget-value" style="color:var(--brand-pink)">—</div>
+      <div class="widget-sub">Connect Airtable</div>
+    </div>
+    <div class="overlay-widget span-3">
+      <div class="overlay-widget-title">Brand Tasks</div>
+      <div class="task-list">
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-dot"></div><span>Update brand kit in Canva</span>
+        </div>
+        <div class="task-item done" onclick="toggleTask(this)">
+          <div class="task-dot"></div><span>Schedule Instagram posts — week of June 2</span>
+        </div>
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-dot"></div><span>Send PR kit to venue contact</span>
+        </div>
+      </div>
+      <div class="add-task-row">
+        <input class="task-input" placeholder="Add a brand task..." onkeydown="addTask(event, this)">
+        <button class="add-btn" style="border-color:var(--brand-pink);color:var(--brand-pink);" onclick="addTaskBtn(this)">+ ADD</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="expanded-overlay" id="overlay-sales">
+  <div class="overlay-header">
+    <div class="overlay-title" style="color:var(--sales-green);text-shadow:0 0 30px var(--sales-green)">SALES</div>
+    <button class="close-btn" onclick="closeOverlay('sales')">✕</button>
+  </div>
+  <div class="overlay-content">
+    <div class="overlay-widget">
+      <div class="overlay-widget-title">Revenue MTD</div>
+      <div class="overlay-widget-value" style="color:var(--sales-green)">—</div>
+      <div class="widget-sub">Connect QuickBooks</div>
+    </div>
+    <div class="overlay-widget">
+      <div class="overlay-widget-title">Active Inquiries</div>
+      <div class="overlay-widget-value" style="color:var(--sales-green)">—</div>
+      <div class="widget-sub">Leads in pipeline</div>
+    </div>
+    <div class="overlay-widget">
+      <div class="overlay-widget-title">Monthly Target</div>
+      <div class="overlay-widget-value" style="color:var(--sales-green)">—%</div>
+      <div class="progress-bar" style="margin-top:8px;"><div class="progress-fill" style="width:0%;background:linear-gradient(90deg,var(--sales-green),rgba(0,255,136,0.5));box-shadow:0 0 8px var(--sales-green)"></div></div>
+    </div>
+    <div class="overlay-widget span-3">
+      <div class="overlay-widget-title">Client Pipeline</div>
+      <div class="widget-sub" style="margin-top:6px;">Connect Airtable to see live client data</div>
+    </div>
+    <div class="overlay-widget span-3">
+      <div class="overlay-widget-title">Sales Tasks</div>
+      <div class="task-list">
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-dot"></div><span>Follow up — June 14th inquiry</span>
+        </div>
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-dot"></div><span>Build Midsummer Night package proposal</span>
+        </div>
+        <div class="task-item done" onclick="toggleTask(this)">
+          <div class="task-dot"></div><span>Send contract — Smith Corporate Event</span>
+        </div>
+      </div>
+      <div class="add-task-row">
+        <input class="task-input" placeholder="Add a sales task..." onkeydown="addTask(event, this)">
+        <button class="add-btn" style="border-color:var(--sales-green);color:var(--sales-green);" onclick="addTaskBtn(this)">+ ADD</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="expanded-overlay" id="overlay-product">
+  <div class="overlay-header">
+    <div class="overlay-title" style="color:var(--product-blue);text-shadow:0 0 30px var(--product-blue)">PRODUCT</div>
+    <button class="close-btn" onclick="closeOverlay('product')">✕</button>
+  </div>
+  <div class="overlay-content">
+    <div class="overlay-widget">
+      <div class="overlay-widget-title">Upcoming Bookings</div>
+      <div class="overlay-widget-value" style="color:var(--product-blue)">—</div>
+      <div class="widget-sub">Connect Airtable</div>
+    </div>
+    <div class="overlay-widget">
+      <div class="overlay-widget-title">Active Talent</div>
+      <div class="overlay-widget-value" style="color:var(--product-blue)">—</div>
+      <div class="widget-sub">Roster size</div>
+    </div>
+    <div class="overlay-widget">
+      <div class="overlay-widget-title">COGS</div>
+      <div class="overlay-widget-value" style="color:var(--product-blue)">—</div>
+      <div class="widget-sub">Cost of goods sold</div>
+    </div>
+    <div class="overlay-widget span-2">
+      <div class="overlay-widget-title">Costume Production</div>
+      <div class="widget-sub" style="margin-top:6px;">Connect Airtable to see costume orders & production status</div>
+    </div>
+    <div class="overlay-widget">
+      <div class="overlay-widget-title">Entertainment Packages</div>
+      <div class="widget-sub" style="margin-top:6px;">Connect Airtable to see packages</div>
+    </div>
+    <div class="overlay-widget span-3">
+      <div class="overlay-widget-title">Product Tasks</div>
+      <div class="task-list">
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-dot"></div><span>Finalize costume order — July 4th event</span>
+        </div>
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-dot"></div><span>Confirm talent roster — Gala booking</span>
+        </div>
+        <div class="task-item done" onclick="toggleTask(this)">
+          <div class="task-dot"></div><span>Content capture — June 1st event</span>
+        </div>
+      </div>
+      <div class="add-task-row">
+        <input class="task-input" placeholder="Add a product task..." onkeydown="addTask(event, this)">
+        <button class="add-btn" style="border-color:var(--product-blue);color:var(--product-blue);" onclick="addTaskBtn(this)">+ ADD</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="expanded-overlay" id="overlay-ops">
+  <div class="overlay-header">
+    <div class="overlay-title" style="color:var(--ops-cyan);text-shadow:0 0 30px var(--ops-cyan)">OPS</div>
+    <button class="close-btn" onclick="closeOverlay('ops')">✕</button>
+  </div>
+  <div class="overlay-content">
+    <div class="overlay-widget">
+      <div class="overlay-widget-title">Financial Snapshot</div>
+      <div class="overlay-widget-value" style="color:var(--ops-cyan)">—</div>
+      <div class="widget-sub">Connect QuickBooks</div>
+    </div>
+    <div class="overlay-widget">
+      <div class="overlay-widget-title">P & L (QTD)</div>
+      <div class="overlay-widget-value" style="color:var(--ops-cyan)">—</div>
+      <div class="widget-sub">This quarter</div>
+    </div>
+    <div class="overlay-widget">
+      <div class="overlay-widget-title">Payroll</div>
+      <div class="overlay-widget-value" style="color:var(--ops-cyan)">—</div>
+      <div class="widget-sub">Next run</div>
+    </div>
+    <div class="overlay-widget span-2">
+      <div class="overlay-widget-title">Make.com Automations</div>
+      <div style="margin-top:8px;">
+        <div class="auto-item"><div class="auto-dot on"></div>Booking Contract Automation — Active</div>
+        <div class="auto-item"><div class="auto-dot on"></div>Client Invoice & Contract Generation — Active</div>
+        <div class="auto-item"><div class="auto-dot on"></div>Gig Request Automation — Active</div>
+        <div class="auto-item"><div class="auto-dot on"></div>POST TO INSTAGRAM — Active</div>
+        <div class="auto-item"><div class="auto-dot err"></div>Client Balance Invoice — <span style="color:#ff4466;">⚠ Invalid · 7/8 errors</span></div>
+        <div class="auto-item"><div class="auto-dot err"></div>Talent Invoice Reminder — <span style="color:#ff4466;">⚠ 1 error</span></div>
+        <div class="auto-item"><div class="auto-dot off"></div>Availability Check — Inactive</div>
+      </div>
+    </div>
+    <div class="overlay-widget">
+      <div class="overlay-widget-title">Team Size</div>
+      <div class="overlay-widget-value" style="color:var(--ops-cyan)">—</div>
+      <div class="widget-sub">Connect Airtable</div>
+    </div>
+    <div class="overlay-widget span-3">
+      <div class="overlay-widget-title">Ops Tasks</div>
+      <div class="task-list">
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-dot"></div><span>Fix Client Balance Invoice automation in Make</span>
+        </div>
+        <div class="task-item" onclick="toggleTask(this)">
+          <div class="task-dot"></div><span>Review upcoming payroll — June 15</span>
+        </div>
+        <div class="task-item done" onclick="toggleTask(this)">
+          <div class="task-dot"></div><span>Set up QuickBooks API credentials</span>
+        </div>
+      </div>
+      <div class="add-task-row">
+        <input class="task-input" placeholder="Add an ops task..." onkeydown="addTask(event, this)">
+        <button class="add-btn" style="border-color:var(--ops-cyan);color:var(--ops-cyan);" onclick="addTaskBtn(this)">+ ADD</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+
+  // Open quadrant expanded view
+  function openQuadrant(name) {
+    document.getElementById('overlay-' + name).classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeOverlay(name) {
+    document.getElementById('overlay-' + name).classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  // Close on ESC
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.expanded-overlay.active').forEach(el => {
+        el.classList.remove('active');
+      });
+      document.body.style.overflow = '';
+    }
+  });
+
+  // Prevent overlay close when clicking inside
+  document.querySelectorAll('.expanded-overlay').forEach(overlay => {
+    overlay.addEventListener('click', e => e.stopPropagation());
+  });
+
+  // Toggle task done state
+  function toggleTask(el) {
+    el.classList.toggle('done');
+    event.stopPropagation();
+  }
+
+  // Add task on Enter
+  function addTask(e, input) {
+    if (e.key === 'Enter' && input.value.trim()) {
+      const list = input.closest('.overlay-widget') ? input.closest('.overlay-widget').querySelector('.task-list') : input.closest('.widget').querySelector('.task-list');
+      if (list) {
+        const color = getComputedStyle(input.closest('.task-item') || list.firstChild || document.body).color;
+        const item = document.createElement('div');
+        item.className = 'task-item';
+        item.style.color = list.firstChild ? getComputedStyle(list.firstChild).color : 'inherit';
+        item.onclick = function() { toggleTask(this); };
+        item.innerHTML = `<div class="task-dot"></div><span>${input.value.trim()}</span>`;
+        list.appendChild(item);
+        input.value = '';
+      }
+      e.stopPropagation();
+    }
+  }
+
+  function addTaskBtn(btn) {
+    const input = btn.previousElementSibling;
+    if (input && input.value.trim()) {
+      const list = btn.closest('.overlay-widget') ? btn.closest('.overlay-widget').querySelector('.task-list') : btn.closest('.widget').querySelector('.task-list');
+      if (list) {
+        const item = document.createElement('div');
+        item.className = 'task-item';
+        item.style.color = list.firstChild ? getComputedStyle(list.firstChild).color : 'inherit';
+        item.onclick = function() { toggleTask(this); };
+        item.innerHTML = `<div class="task-dot"></div><span>${input.value.trim()}</span>`;
+        list.appendChild(item);
+        input.value = '';
+      }
+    }
+    event.stopPropagation();
+  }
+
+  function refreshDashboard() {
+    const btn = document.getElementById('refresh-btn');
+    btn.classList.add('spinning');
+    btn.addEventListener('animationend', () => btn.classList.remove('spinning'), { once: true });
+    // When Airtable is wired in, data-fetch calls will go here
+  }
+
+  function showSettings() {
+    alert('Settings panel coming soon!\n\nYou\'ll be able to enter:\n• Airtable API Key\n• QuickBooks Client ID & Secret\n• Google Drive folder links\n• Instagram API credentials');
+    event.stopPropagation();
+  }
+</script>
+</body>
+</html>
