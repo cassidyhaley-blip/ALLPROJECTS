@@ -2179,6 +2179,7 @@
     if (!key) { console.warn('CHP: No API key found'); return null; }
     const params = new URLSearchParams();
     params.set('pageSize', pageSize);
+    params.set('returnFieldsByFieldId', 'true');
     fields.forEach(f => params.append('fields[]', f));
     if (sort) {
       params.set('sort[0][field]', sort.field);
@@ -2195,7 +2196,16 @@
         setEl('product-event-cards', `<div style="padding:16px;color:#ff4466;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;">⚠ API Error ${res.status} — check your API key in Settings and make sure it has data.records:read scope on your MAIN base.</div>`);
         return null;
       }
-      return await res.json();
+      const json = await res.json();
+      // The public REST API returns each record's cells under `fields`
+      // (keyed by field ID because returnFieldsByFieldId=true). The rest of
+      // this dashboard reads `cellValuesByFieldId`, so mirror it for compat.
+      if (json && Array.isArray(json.records)) {
+        json.records.forEach(r => {
+          if (r && !r.cellValuesByFieldId) r.cellValuesByFieldId = r.fields || {};
+        });
+      }
+      return json;
     } catch(e) {
       console.error('CHP fetch failed:', e);
       setEl('product-event-cards', `<div style="padding:16px;color:#ff4466;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;">⚠ Network error: ${e.message}</div>`);
@@ -2427,30 +2437,69 @@
       <div class="task-dot"></div><span>${escapeHtml(text)}</span>${sub}</div>`;
   }
 
+  function setAllTaskLists(html) {
+    ['brand','sales','product','ops'].forEach(quad => {
+      ['tasks-' + quad, 'tasks-' + quad + '-ov'].forEach(id => setEl(id, html));
+    });
+  }
+
   async function loadTasks() {
     const key = getKey();
-    if (!key) return;
+    if (!key) {
+      setAllTaskLists('<div class="widget-sub" style="padding:6px 0;">Add your Airtable key in Settings.</div>');
+      return;
+    }
 
-    const data = await airtableFetch(
-      TASKS_TABLE, [T_NAME, T_DEPT, T_STATUS, T_DATE, T_PRIO], 100,
-      { field: T_DATE, dir: 'asc' }
-    );
+    // Own fetch so task panels surface their own connection errors
+    const params = new URLSearchParams();
+    params.set('pageSize', 100);
+    params.set('returnFieldsByFieldId', 'true');
+    [T_NAME, T_DEPT, T_STATUS, T_DATE, T_PRIO].forEach(f => params.append('fields[]', f));
+    params.set('sort[0][field]', T_DATE);
+    params.set('sort[0][direction]', 'asc');
+    const url = `https://api.airtable.com/v0/${BASE_ID}/${TASKS_TABLE}?${params.toString()}`;
+
+    let data;
+    try {
+      const res = await fetch(url, { headers: { Authorization: `Bearer ${key}` } });
+      if (!res.ok) {
+        const hint = res.status === 401 ? 'Invalid or expired token'
+          : res.status === 403 ? 'Token lacks access to this base or the data.records:read scope'
+          : res.status === 404 ? 'Base ID or "Tasks" table name not found'
+          : res.status === 422 ? 'A requested field name/ID is wrong'
+          : 'Request failed';
+        setAllTaskLists(`<div style="padding:6px 0;color:#ff6680;font-size:12px;font-weight:600;">⚠ ${res.status} — ${hint}</div>`);
+        console.error('CHP Tasks error:', res.status, await res.text());
+        return;
+      }
+      data = await res.json();
+    } catch (e) {
+      // A bare "Failed to fetch" here is almost always the browser blocking the
+      // request (CORS / network), not a bad key.
+      setAllTaskLists(`<div style="padding:6px 0;color:#ff6680;font-size:12px;font-weight:600;">⚠ Network blocked: ${e.message}</div>`);
+      console.error('CHP Tasks fetch failed:', e);
+      return;
+    }
+
     if (!data || !data.records) return;
 
-    // Bucket records by quadrant
+    // Bucket records by quadrant. Match the events code's data shape
+    // (cellValuesByFieldId), with a fallback to .fields just in case.
     const buckets = { brand:[], sales:[], product:[], ops:[] };
     data.records.forEach(r => {
-      const f = r.cellValuesByFieldId || {};
+      const f = r.cellValuesByFieldId || r.fields || {};
       const text = (f[T_NAME] || '').trim();
       if (!text) return;
-      const deptName = (f[T_DEPT]?.name || '').trim().toLowerCase();
+      const deptCell = f[T_DEPT];
+      const deptName = (typeof deptCell === 'object' ? (deptCell?.name || '') : (deptCell || '')).trim().toLowerCase();
       const quad = DEPT_TO_QUAD[deptName] || 'product'; // unassigned -> product
-      const status = f[T_STATUS]?.name || '';
+      const statusCell = f[T_STATUS];
+      const status = (typeof statusCell === 'object' ? (statusCell?.name || '') : (statusCell || ''));
       const done = DONE_STATUSES.includes(status.toLowerCase());
       buckets[quad].push({ text, status, done });
     });
 
-    // Incomplete first, then completed; cap completed shown so lists stay readable
+    // Incomplete first, then completed
     Object.keys(buckets).forEach(quad => {
       const items = buckets[quad];
       items.sort((a, b) => (a.done === b.done) ? 0 : (a.done ? 1 : -1));
@@ -2571,7 +2620,10 @@
     // QuickBooks + GA snapshots don't need the Airtable key
     loadQuickBooksSnapshot();
     loadAnalyticsSnapshot();
-    if (getKey()) loadProductData();
+    if (getKey()) {
+      loadProductData();
+      loadTasks();
+    }
   }
   window.addEventListener('DOMContentLoaded', bootDashboard);
   if (document.readyState !== 'loading') {
